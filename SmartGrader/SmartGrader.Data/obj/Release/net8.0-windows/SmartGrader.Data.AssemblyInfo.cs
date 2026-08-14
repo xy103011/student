@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartGrader.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34aaef8b002fafd474985389a01245a5c835eb24")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a7e1727a178b92f519abce72bcf6203155dbc9d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartGrader.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartGrader.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
