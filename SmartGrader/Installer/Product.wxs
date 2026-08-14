@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*" Name="智能作业批阅平台" Language="2052" Version="1.0.0.0" Manufacturer="SmartGrader" UpgradeCode="a1b2c3d4-e5f6-7890-abcd-ef1234567890">
-        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64"/>
-        <MajorUpgrade AllowDowngrades="yes" AllowSameVersionUpgrades="no"/>
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"/>
+        <MajorUpgrade/>
         <MediaTemplate EmbedCab="yes"/>
         
         <Feature Id="ProductFeature" Title="智能作业批阅平台" Level="1">
             <ComponentGroupRef Id="ProductComponents"/>
         </Feature>
-        
-        <Property Id="WINDOWSBUILDVER"/>
-        <Condition Message="此程序需要 Windows 7 或更高版本。">
-            <![CDATA[WINDOWSBUILDVER >= 601]]>
-        </Condition>
     </Product>
     
     <Fragment>
