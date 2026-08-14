@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using SmartGrader.Core.Models;
 
@@ -38,9 +39,6 @@ namespace SmartGrader.Data.Database
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Description).HasMaxLength(1000);
-                entity.HasMany(a => a.Questions)
-                      .WithOne()
-                      .HasForeignKey(q => q.Id);
             });
 
             modelBuilder.Entity<Student>(entity =>
@@ -48,9 +46,6 @@ namespace SmartGrader.Data.Database
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.StudentId).IsRequired().HasMaxLength(50);
-                entity.HasOne(e => e.Class)
-                      .WithMany(c => c.Students)
-                      .HasForeignKey(e => e.ClassId);
             });
 
             modelBuilder.Entity<Class>(entity =>
@@ -65,12 +60,6 @@ namespace SmartGrader.Data.Database
                 entity.Property(e => e.Answer).IsRequired();
                 entity.Property(e => e.Feedback).HasMaxLength(500);
                 entity.Property(e => e.GradingMethod).HasMaxLength(50);
-                entity.HasOne(e => e.Assignment)
-                      .WithMany()
-                      .HasForeignKey(e => e.AssignmentId);
-                entity.HasOne(e => e.Student)
-                      .WithMany()
-                      .HasForeignKey(e => e.StudentId);
             });
         }
 

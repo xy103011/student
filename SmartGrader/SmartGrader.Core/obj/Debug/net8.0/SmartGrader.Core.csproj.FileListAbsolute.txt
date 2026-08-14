@@ -1,0 +1,13 @@
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.csproj.AssemblyReference.cache
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.AssemblyInfoInputs.cache
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.AssemblyInfo.cs
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.csproj.CoreCompileInputs.cache
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.sourcelink.json
+/workspace/SmartGrader/SmartGrader.Core/bin/Debug/net8.0/SmartGrader.Core.deps.json
+/workspace/SmartGrader/SmartGrader.Core/bin/Debug/net8.0/SmartGrader.Core.dll
+/workspace/SmartGrader/SmartGrader.Core/bin/Debug/net8.0/SmartGrader.Core.pdb
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.dll
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/refint/SmartGrader.Core.dll
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/SmartGrader.Core.pdb
+/workspace/SmartGrader/SmartGrader.Core/obj/Debug/net8.0/ref/SmartGrader.Core.dll

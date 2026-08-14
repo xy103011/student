@@ -1,4 +1,4 @@
-<UserControl x:Class="SmartGrader.Desktop.Views.GadingView"
+<UserControl x:Class="SmartGrader.Desktop.Views.GradingView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>

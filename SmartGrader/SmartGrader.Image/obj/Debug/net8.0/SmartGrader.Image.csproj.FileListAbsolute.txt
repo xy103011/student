@@ -1,0 +1,6 @@
+/workspace/SmartGrader/SmartGrader.Image/obj/Debug/net8.0/SmartGrader.Image.csproj.AssemblyReference.cache
+/workspace/SmartGrader/SmartGrader.Image/obj/Debug/net8.0/SmartGrader.Image.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/SmartGrader/SmartGrader.Image/obj/Debug/net8.0/SmartGrader.Image.AssemblyInfoInputs.cache
+/workspace/SmartGrader/SmartGrader.Image/obj/Debug/net8.0/SmartGrader.Image.AssemblyInfo.cs
+/workspace/SmartGrader/SmartGrader.Image/obj/Debug/net8.0/SmartGrader.Image.csproj.CoreCompileInputs.cache
+/workspace/SmartGrader/SmartGrader.Image/obj/Debug/net8.0/SmartGrader.Image.sourcelink.json

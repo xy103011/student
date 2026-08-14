@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:SmartGrader.Desktop.ViewModels"
+        xmlns:views="clr-namespace:SmartGrader.Desktop.Views"
         mc:Ignorable="d"
         Title="智能作业批阅平台" Height="800" Width="1200"
         WindowStartupLocation="CenterScreen">
@@ -42,6 +43,25 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontSize" Value="14"/>
         </Style>
+        
+        <DataTemplate x:Key="AssignmentsTemplate">
+            <views:AssignmentsView/>
+        </DataTemplate>
+        <DataTemplate x:Key="GradingTemplate">
+            <views:GradingView/>
+        </DataTemplate>
+        <DataTemplate x:Key="StudentsTemplate">
+            <views:StudentsView/>
+        </DataTemplate>
+        <DataTemplate x:Key="StatisticsTemplate">
+            <views:StatisticsView/>
+        </DataTemplate>
+        <DataTemplate x:Key="ClassStatsTemplate">
+            <views:ClassStatsView/>
+        </DataTemplate>
+        <DataTemplate x:Key="SettingsTemplate">
+            <views:SettingsView/>
+        </DataTemplate>
     </Window.Resources>
     
     <Grid>
@@ -102,30 +122,28 @@
                        Margin="0,0,0,20"/>
             
             <!-- 内容区域 -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ContentControl Content="{Binding CurrentView}">
-                    <ContentControl.Resources>
-                        <DataTemplate x:Key="Assignments">
-                            <AssignmentsView/>
-                        </DataTemplate>
-                        <DataTemplate x:Key="Grading">
-                            <GradingView/>
-                        </DataTemplate>
-                        <DataTemplate x:Key="Students">
-                            <StudentsView/>
-                        </DataTemplate>
-                        <DataTemplate x:Key="Statistics">
-                            <StatisticsView/>
-                        </DataTemplate>
-                        <DataTemplate x:Key="ClassStats">
-                            <ClassStatsView/>
-                        </DataTemplate>
-                        <DataTemplate x:Key="Settings">
-                            <SettingsView/>
-                        </DataTemplate>
-                    </ContentControl.Resources>
-                </ContentControl>
-            </ScrollViewer>
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}">
+                <ContentControl.Resources>
+                    <DataTemplate x:Key="Assignments">
+                        <views:AssignmentsView/>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Grading">
+                        <views:GradingView/>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Students">
+                        <views:StudentsView/>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Statistics">
+                        <views:StatisticsView/>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ClassStats">
+                        <views:ClassStatsView/>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Settings">
+                        <views:SettingsView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
             
             <!-- 状态栏 -->
             <TextBlock Grid.Row="2" 

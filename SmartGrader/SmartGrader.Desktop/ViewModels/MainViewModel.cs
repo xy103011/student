@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SmartGrader.AI.Services;
 using SmartGrader.Core.Interfaces;
 using SmartGrader.Core.Models;
+using SmartGrader.Core.Services;
 using SmartGrader.Data;
 using SmartGrader.Data.Database;
-using SmartGrader.Data.Repositories;
+using SmartGrader.Data.Database;
+using SmartGrader.Image.Services;
 
 namespace SmartGrader.Desktop.ViewModels
 {
-    public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
+    public partial class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     {
         private readonly AppDbContext _context;
         private readonly IGradingEngine _gradingEngine;
@@ -24,7 +28,7 @@ namespace SmartGrader.Desktop.ViewModels
         private readonly IStatisticsService _statisticsService;
 
         [ObservableProperty]
-        private string _currentView = "Home";
+        private string _currentView = "Assignments";
 
         [ObservableProperty]
         private ObservableCollection<Assignment> _assignments = new();
@@ -51,9 +55,6 @@ namespace SmartGrader.Desktop.ViewModels
         private ObservableCollection<GradeHistory> _gradeHistory = new();
 
         [ObservableProperty]
-        private ObservableCollection<QuestionStatistics> _questionStats = new();
-
-        [ObservableProperty]
         private ClassStatistics? _classStats;
 
         [ObservableProperty]
@@ -71,7 +72,7 @@ namespace SmartGrader.Desktop.ViewModels
             _gradingEngine = new GradingEngine();
             _aiService = new AIService(null, null);
             _imageService = new ImageProcessingService();
-            _statisticsService = new StatisticsService(_context);
+            _statisticsService = new StatisticsService();
         }
 
         [RelayCommand]
@@ -264,11 +265,8 @@ namespace SmartGrader.Desktop.ViewModels
                 IsBusy = true;
                 StatusMessage = "正在加载统计数据...";
                 
-                var history = await _statisticsService.GetGradeHistoryByAssignment(SelectedAssignment.Id);
+                var history = _statisticsService.GetGradeHistoryByAssignment(SelectedAssignment.Id);
                 GradeHistory = new ObservableCollection<GradeHistory>(history);
-                
-                var questionStats = _statisticsService.GetQuestionStatistics(SelectedAssignment.Id);
-                QuestionStats = new ObservableCollection<QuestionStatistics> { questionStats };
                 
                 StatusMessage = $"已加载 {history.Count} 条批阅记录";
             }
@@ -339,7 +337,5 @@ namespace SmartGrader.Desktop.ViewModels
             CurrentView = view;
             StatusMessage = $"已切换到: {view}";
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

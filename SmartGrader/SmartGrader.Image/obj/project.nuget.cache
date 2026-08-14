@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "hNoC5AYuRf8=",
+  "success": true,
+  "projectFilePath": "/workspace/SmartGrader/SmartGrader.Image/SmartGrader.Image.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/communitytoolkit.mvvm/8.2.2/communitytoolkit.mvvm.8.2.2.nupkg.sha512",
+    "/root/.nuget/packages/microsoft.win32.systemevents/8.0.0/microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "/root/.nuget/packages/system.drawing.common/8.0.0/system.drawing.common.8.0.0.nupkg.sha512",
+    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/8.0.30/microsoft.windowsdesktop.app.ref.8.0.30.nupkg.sha512"
+  ],
+  "logs": []
+}

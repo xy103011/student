@@ -1,0 +1,16 @@
+/workspace/SmartGrader/SmartGrader.AI/bin/Debug/net8.0-windows/SmartGrader.AI.deps.json
+/workspace/SmartGrader/SmartGrader.AI/bin/Debug/net8.0-windows/SmartGrader.AI.dll
+/workspace/SmartGrader/SmartGrader.AI/bin/Debug/net8.0-windows/SmartGrader.AI.pdb
+/workspace/SmartGrader/SmartGrader.AI/bin/Debug/net8.0-windows/SmartGrader.Core.dll
+/workspace/SmartGrader/SmartGrader.AI/bin/Debug/net8.0-windows/SmartGrader.Core.pdb
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.csproj.AssemblyReference.cache
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.AssemblyInfoInputs.cache
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.AssemblyInfo.cs
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.csproj.CoreCompileInputs.cache
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.sourcelink.json
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGra.1D968F81.Up2Date
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.dll
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/refint/SmartGrader.AI.dll
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/SmartGrader.AI.pdb
+/workspace/SmartGrader/SmartGrader.AI/obj/Debug/net8.0-windows/ref/SmartGrader.AI.dll

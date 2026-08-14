@@ -1,6 +1,8 @@
 using System;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Azure.AI.OpenAI;
 using SmartGrader.Core.Interfaces;
 using SmartGrader.Core.Models;
 
@@ -8,31 +10,28 @@ namespace SmartGrader.AI.Services
 {
     public class AIService : IAIgradingService
     {
-        private readonly OpenAIClient? _client;
+        private readonly string? _apiKey;
+        private readonly string? _baseUri;
         private readonly string _model;
         private bool _isAvailable = false;
+        private readonly HttpClient _httpClient;
 
         public AIService(string? apiKey, string? baseUri, string? model = null)
         {
+            _apiKey = apiKey;
+            _baseUri = baseUri;
             _model = model ?? "gpt-4";
+            _httpClient = new HttpClient();
             
             if (!string.IsNullOrEmpty(apiKey) && !string.IsNullOrEmpty(baseUri))
             {
-                try
-                {
-                    _client = new OpenAIClient(new Uri(baseUri), new Azure.AzureKeyCredential(apiKey));
-                    _isAvailable = true;
-                }
-                catch
-                {
-                    _isAvailable = false;
-                }
+                _isAvailable = true;
             }
         }
 
         public async Task<bool> IsAvailableAsync()
         {
-            return _isAvailable && _client != null;
+            return _isAvailable && !string.IsNullOrEmpty(_apiKey);
         }
 
         public async Task<GradingRecord> GradeSubjectiveAsync(Question question, string studentAnswer)
@@ -47,7 +46,7 @@ namespace SmartGrader.AI.Services
                 GradingMethod = "AI"
             };
 
-            if (_client == null)
+            if (_httpClient == null || string.IsNullOrEmpty(_apiKey))
             {
                 record.IsCorrect = false;
                 record.Score = 0;
@@ -79,13 +78,27 @@ namespace SmartGrader.AI.Services
 
         private async Task<string> CallAIAsync(string prompt)
         {
-            var response = await _client!.GetChatCompletionsAsync(_model, new[]
+            var url = $"{_baseUri}/openai/deployments/{_model}/chat/completions?api-version=2024-02-01";
+            
+            var requestBody = new
             {
-                new ChatMessage(ChatRole.System, "你是一个专业的教师助手"),
-                new ChatMessage(ChatRole.User, prompt)
-            });
+                messages = new[]
+                {
+                    new { role = "system", content = "你是一个专业的教师助手" },
+                    new { role = "user", content = prompt }
+                }
+            };
 
-            return response.Choices[0].Message.Content;
+            var json = JsonSerializer.Serialize(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("api-key", _apiKey!);
+
+            var response = await _httpClient.PostAsync(url, content);
+            var responseJson = await response.Content.ReadAsStringAsync();
+            
+            using var doc = JsonDocument.Parse(responseJson);
+            return doc.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString() ?? string.Empty;
         }
 
         private GradingRecord ParseAIResponse(Question question, string response)

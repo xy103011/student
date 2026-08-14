@@ -1,0 +1,17 @@
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/SmartGrader.Desktop.csproj.AssemblyReference.cache
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/ClassStatsView.baml
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/GradingView.baml
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/SettingsView.baml
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/StatisticsView.baml
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/StudentsView.baml
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/App.baml
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/AssignmentsView.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/ClassStatsView.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/GradingView.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/SettingsView.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/StatisticsView.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/Views/StudentsView.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/App.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/GeneratedInternalTypeHelper.g.cs
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/SmartGrader_MarkupCompile.cache
+/workspace/SmartGrader/SmartGrader.Desktop/obj/Release/net8.0-windows/win-x64/SmartGrader_MarkupCompile.lref
