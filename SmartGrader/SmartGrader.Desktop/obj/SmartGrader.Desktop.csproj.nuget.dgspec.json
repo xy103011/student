@@ -76,6 +76,11 @@
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
+        }
       }
     },
     "/workspace/SmartGrader/SmartGrader.Core/SmartGrader.Core.csproj": {
@@ -145,6 +150,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     },
@@ -226,6 +236,11 @@
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
+        }
       }
     },
     "/workspace/SmartGrader/SmartGrader.Desktop/SmartGrader.Desktop.csproj": {
@@ -306,6 +321,10 @@
           "warn": true,
           "downloadDependencies": [
             {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.30, 8.0.30]"
+            },
+            {
               "name": "Microsoft.WindowsDesktop.App.Ref",
               "version": "[8.0.30, 8.0.30]"
             }
@@ -319,6 +338,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     },
@@ -393,6 +417,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }

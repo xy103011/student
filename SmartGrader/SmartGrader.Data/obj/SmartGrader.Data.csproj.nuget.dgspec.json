@@ -72,6 +72,11 @@
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
+        }
       }
     },
     "/workspace/SmartGrader/SmartGrader.Data/SmartGrader.Data.csproj": {
@@ -151,6 +156,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/tmp/dotnet.LIWz83zse/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }

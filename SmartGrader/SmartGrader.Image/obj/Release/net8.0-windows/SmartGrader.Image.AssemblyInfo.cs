@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartGrader.Image")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8951f607ef55416c641d0c14e4fd1b10d861c84a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34aaef8b002fafd474985389a01245a5c835eb24")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartGrader.Image")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartGrader.Image")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
