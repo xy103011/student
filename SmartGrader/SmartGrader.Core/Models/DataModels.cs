@@ -1,77 +1,342 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace SmartGrader.Core.Models
 {
-    public class Question
+    public class ObservableObject : INotifyPropertyChanged
     {
-        public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+    }
+
+    public class Question : ObservableObject
+    {
+        private int _id;
+        private string _title = string.Empty;
+        private string _type = string.Empty;
+        private string _content = string.Empty;
+        private string _answer = string.Empty;
+        private int _score;
+        private string? _explanation;
+
+        public int Id 
+        { 
+            get => _id; 
+            set => SetProperty(ref _id, value); 
+        }
+        
+        public string Title 
+        { 
+            get => _title; 
+            set => SetProperty(ref _title, value); 
+        }
+        
+        public string Type 
+        { 
+            get => _type; 
+            set => SetProperty(ref _type, value); 
+        }
+        
+        public string Content 
+        { 
+            get => _content; 
+            set => SetProperty(ref _content, value); 
+        }
+        
         public List<Option> Options { get; set; } = new();
-        public string Answer { get; set; } = string.Empty;
-        public int Score { get; set; }
-        public string? Explanation { get; set; }
+        
+        public string Answer 
+        { 
+            get => _answer; 
+            set => SetProperty(ref _answer, value); 
+        }
+        
+        public int Score 
+        { 
+            get => _score; 
+            set => SetProperty(ref _score, value); 
+        }
+        
+        public string? Explanation 
+        { 
+            get => _explanation; 
+            set => SetProperty(ref _explanation, value); 
+        }
     }
 
-    public class Option
+    public class Option : ObservableObject
     {
-        public string Label { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
+        private string _label = string.Empty;
+        private string _content = string.Empty;
+
+        public string Label 
+        { 
+            get => _label; 
+            set => SetProperty(ref _label, value); 
+        }
+        
+        public string Content 
+        { 
+            get => _content; 
+            set => SetProperty(ref _content, value); 
+        }
     }
 
-    public class Assignment
+    public class Assignment : ObservableObject
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public int TeacherId { get; set; }
+        private int _id;
+        private string _name = string.Empty;
+        private string _description = string.Empty;
+        private int _teacherId;
+        private DateTime _createdAt;
+        private DateTime? _deadline;
+        private bool _isActive = true;
+
+        public int Id 
+        { 
+            get => _id; 
+            set => SetProperty(ref _id, value); 
+        }
+        
+        public string Name 
+        { 
+            get => _name; 
+            set => SetProperty(ref _name, value); 
+        }
+        
+        public string Description 
+        { 
+            get => _description; 
+            set => SetProperty(ref _description, value); 
+        }
+        
+        public int TeacherId 
+        { 
+            get => _teacherId; 
+            set => SetProperty(ref _teacherId, value); 
+        }
+        
         public List<Question> Questions { get; set; } = new();
-        public DateTime CreatedAt { get; set; }
-        public DateTime? Deadline { get; set; }
-        public bool IsActive { get; set; } = true;
+        
+        public DateTime CreatedAt 
+        { 
+            get => _createdAt; 
+            set => SetProperty(ref _createdAt, value); 
+        }
+        
+        public DateTime? Deadline 
+        { 
+            get => _deadline; 
+            set => SetProperty(ref _deadline, value); 
+        }
+        
+        public bool IsActive 
+        { 
+            get => _isActive; 
+            set => SetProperty(ref _isActive, value); 
+        }
     }
 
-    public class Student
+    public class Student : ObservableObject
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string StudentId { get; set; } = string.Empty;
-        public int ClassId { get; set; }
+        private int _id;
+        private string _name = string.Empty;
+        private string _studentId = string.Empty;
+        private int _classId;
+
+        public int Id 
+        { 
+            get => _id; 
+            set => SetProperty(ref _id, value); 
+        }
+        
+        public string Name 
+        { 
+            get => _name; 
+            set => SetProperty(ref _name, value); 
+        }
+        
+        public string StudentId 
+        { 
+            get => _studentId; 
+            set => SetProperty(ref _studentId, value); 
+        }
+        
+        public int ClassId 
+        { 
+            get => _classId; 
+            set => SetProperty(ref _classId, value); 
+        }
     }
 
-    public class Class
+    public class Class : ObservableObject
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public int TeacherId { get; set; }
+        private int _id;
+        private string _name = string.Empty;
+        private int _teacherId;
+
+        public int Id 
+        { 
+            get => _id; 
+            set => SetProperty(ref _id, value); 
+        }
+        
+        public string Name 
+        { 
+            get => _name; 
+            set => SetProperty(ref _name, value); 
+        }
+        
+        public int TeacherId 
+        { 
+            get => _teacherId; 
+            set => SetProperty(ref _teacherId, value); 
+        }
+        
         public List<Student> Students { get; set; } = new();
     }
 
-    public class GradingRecord
+    public class GradingRecord : ObservableObject
     {
-        public int Id { get; set; }
-        public int AssignmentId { get; set; }
-        public int StudentId { get; set; }
-        public string Answer { get; set; } = string.Empty;
-        public bool IsCorrect { get; set; }
-        public int Score { get; set; }
-        public int FullScore { get; set; }
-        public string? Feedback { get; set; }
-        public string? GradingMethod { get; set; }
-        public DateTime GradedAt { get; set; }
+        private int _id;
+        private int _assignmentId;
+        private int _studentId;
+        private string _answer = string.Empty;
+        private bool _isCorrect;
+        private int _score;
+        private int _fullScore;
+        private string? _feedback;
+        private string? _gradingMethod;
+        private DateTime _gradedAt;
+
+        public int Id 
+        { 
+            get => _id; 
+            set => SetProperty(ref _id, value); 
+        }
+        
+        public int AssignmentId 
+        { 
+            get => _assignmentId; 
+            set => SetProperty(ref _assignmentId, value); 
+        }
+        
+        public int StudentId 
+        { 
+            get => _studentId; 
+            set => SetProperty(ref _studentId, value); 
+        }
+        
+        public string Answer 
+        { 
+            get => _answer; 
+            set => SetProperty(ref _answer, value); 
+        }
+        
+        public bool IsCorrect 
+        { 
+            get => _isCorrect; 
+            set => SetProperty(ref _isCorrect, value); 
+        }
+        
+        public int Score 
+        { 
+            get => _score; 
+            set => SetProperty(ref _score, value); 
+        }
+        
+        public int FullScore 
+        { 
+            get => _fullScore; 
+            set => SetProperty(ref _fullScore, value); 
+        }
+        
+        public string? Feedback 
+        { 
+            get => _feedback; 
+            set => SetProperty(ref _feedback, value); 
+        }
+        
+        public string? GradingMethod 
+        { 
+            get => _gradingMethod; 
+            set => SetProperty(ref _gradingMethod, value); 
+        }
+        
+        public DateTime GradedAt 
+        { 
+            get => _gradedAt; 
+            set => SetProperty(ref _gradedAt, value); 
+        }
     }
 
-    public class GradingResult
+    public class GradingResult : ObservableObject
     {
-        public int TotalQuestions { get; set; }
-        public int CorrectCount { get; set; }
-        public int WrongCount { get; set; }
-        public double AccuracyRate { get; set; }
-        public int TotalScore { get; set; }
-        public int FullTotalScore { get; set; }
-        public double ScoreRate { get; set; }
+        private int _totalQuestions;
+        private int _correctCount;
+        private int _wrongCount;
+        private double _accuracyRate;
+        private int _totalScore;
+        private int _fullTotalScore;
+        private double _scoreRate;
+
+        public int TotalQuestions 
+        { 
+            get => _totalQuestions; 
+            set => SetProperty(ref _totalQuestions, value); 
+        }
+        
+        public int CorrectCount 
+        { 
+            get => _correctCount; 
+            set => SetProperty(ref _correctCount, value); 
+        }
+        
+        public int WrongCount 
+        { 
+            get => _wrongCount; 
+            set => SetProperty(ref _wrongCount, value); 
+        }
+        
+        public double AccuracyRate 
+        { 
+            get => _accuracyRate; 
+            set => SetProperty(ref _accuracyRate, value); 
+        }
+        
+        public int TotalScore 
+        { 
+            get => _totalScore; 
+            set => SetProperty(ref _totalScore, value); 
+        }
+        
+        public int FullTotalScore 
+        { 
+            get => _fullTotalScore; 
+            set => SetProperty(ref _fullTotalScore, value); 
+        }
+        
+        public double ScoreRate 
+        { 
+            get => _scoreRate; 
+            set => SetProperty(ref _scoreRate, value); 
+        }
+        
         public List<GradingRecord> Records { get; set; } = new();
     }
 }

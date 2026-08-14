@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="智能作业批阅平台" Language="1033" Version="1.0.0.0" 
+  <Product Id="*" Name="智能作业批阅平台" Language="2052" Version="1.0.0.0" 
            Manufacturer="SmartGrader" UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"/>
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-    <MediaTemplate EmbedCab="yes"/>
+    <MajorUpgrade DowngradeErrorMessage="已安装更新版本，无法降级" />
+    <MediaTemplate EmbedCab="yes" />
     
     <Feature Id="ProductFeature" Title="SmartGrader" Level="1">
-      <ComponentGroupRef Id="ProductComponents"/>
-      <ComponentRef Id="ApplicationShortcut"/>
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
     </Feature>
     
     <UI>
-      <UIRef Id="WixUI_ProgressOnly"/>
+      <UIRef Id="WixUI_ProgressOnly" />
     </UI>
     
-    <Icon Id="app.ico" SourceFile="..\SmartGrader.Desktop\app.ico"/>
+    <Icon Id="app.ico" SourceFile="app.ico" />
   </Product>
   
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFiles64Folder">
-        <Directory Id="INSTALLFOLDER" Name="SmartGrader"/>
+        <Directory Id="INSTALLFOLDER" Name="SmartGrader" />
       </Directory>
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="StartMenuFolder" Name="SmartGrader"/>
+        <Directory Id="StartMenuFolder" Name="SmartGrader" />
       </Directory>
     </Directory>
   </Fragment>
@@ -33,7 +33,7 @@
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="ApplicationExecutable" Guid="*">
-        <File Id="SmartGrader.exe" Source="..\SmartGrader.Desktop\bin\Release\net8.0-windows\win-x64\publish\SmartGrader.exe"/>
+        <File Id="SmartGrader.exe" Source="SmartGrader.exe" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -44,8 +44,8 @@
                 Name="智能作业批阅平台" 
                 Description="智能作业批阅平台"
                 Target="[INSTALLFOLDER]SmartGrader.exe"
-                WorkingDirectory="INSTALLFOLDER"/>
-      <RegistryValue Root="HKCU" Key="Software\SmartGrader" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+                WorkingDirectory="INSTALLFOLDER" />
+      <RegistryValue Root="HKCU" Key="Software\SmartGrader" Name="installed" Type="integer" Value="1" KeyPath="yes" />
     </Component>
   </Fragment>
 </Wix>

@@ -33,36 +33,36 @@ namespace SmartGrader.Core.Services
             return result;
         }
 
-        public GradingRecord GradeQuestion(Question question, string answer, string studentAnswer)
+        public GradingRecord GradeQuestion(Question question, string studentAnswer)
         {
             var record = new GradingRecord
             {
-                Question = question,
-                StudentAnswer = studentAnswer,
+                AssignmentId = 0,
+                StudentId = 0,
+                Answer = studentAnswer,
+                FullScore = question.Score,
                 GradedAt = DateTime.Now,
                 GradingMethod = "RuleBased"
             };
 
             bool isCorrect = false;
-            int score = 0;
 
             switch (question.Type)
             {
                 case "Choice":
-                    isCorrect = answer.Trim().ToUpper() == studentAnswer.Trim().ToUpper();
+                    isCorrect = question.Answer.Trim().ToUpper() == studentAnswer.Trim().ToUpper();
                     break;
                 case "TrueFalse":
-                    isCorrect = answer.Trim().ToLower() == studentAnswer.Trim().ToLower();
+                    isCorrect = question.Answer.Trim().ToLower() == studentAnswer.Trim().ToLower();
                     break;
                 case "FillBlank":
-                    isCorrect = answer.Trim() == studentAnswer.Trim();
+                    isCorrect = question.Answer.Trim() == studentAnswer.Trim();
                     break;
                 case "ShortAnswer":
-                    isCorrect = question.IsAIRequired == true;
-                    record.NeedsAIGrading = true;
+                    isCorrect = false;
                     break;
                 default:
-                    isCorrect = answer.Trim() == studentAnswer.Trim();
+                    isCorrect = question.Answer.Trim() == studentAnswer.Trim();
                     break;
             }
 

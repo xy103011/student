@@ -1,0 +1,37 @@
+<UserControl x:Class="SmartGrader.Desktop.Views.GadingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 选择区域 -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="选择作业:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ComboBox x:Name="AssignmentCombo" Margin="0,0,0,10"/>
+            
+            <TextBlock Text="选择学生:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ComboBox x:Name="StudentCombo" Margin="0,0,0,10"/>
+            
+            <StackPanel Orientation="Horizontal">
+                <Button Content="规则批阅" 
+                        Style="{StaticResource ActionButtonStyle}"/>
+                <Button Content="AI批阅" 
+                        Style="{StaticResource ActionButtonStyle}"/>
+                <Button Content="上传图片" 
+                        Style="{StaticResource ActionButtonStyle}"/>
+            </StackPanel>
+        </StackPanel>
+        
+        <!-- 批阅结果 -->
+        <Grid Grid.Row="1">
+            <TextBlock Text="请选择作业和学生进行批阅" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center"
+                       Foreground="Gray"
+                       FontSize="16"/>
+        </Grid>
+    </Grid>
+</UserControl>

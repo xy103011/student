@@ -1,0 +1,57 @@
+<UserControl x:Class="SmartGrader.Desktop.Views.StatisticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 工具栏 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="选择作业:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox Width="200" Margin="0,0,10,0"/>
+            <Button Content="查看统计" 
+                    Style="{StaticResource ActionButtonStyle}"/>
+        </StackPanel>
+        
+        <!-- 统计内容 -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- 批阅记录 -->
+            <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="5">
+                <StackPanel>
+                    <TextBlock Text="批阅记录" FontWeight="Bold" Margin="10"/>
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="学生" Binding="{Binding StudentName}" Width="*"/>
+                            <DataGridTextColumn Header="得分" Binding="{Binding Score}" Width="100"/>
+                            <DataGridTextColumn Header="满分" Binding="{Binding FullScore}" Width="100"/>
+                            <DataGridTextColumn Header="批阅方式" Binding="{Binding GradingMethod}" Width="120"/>
+                            <DataGridTextColumn Header="批阅时间" Binding="{Binding GradedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+            
+            <!-- 题目统计 -->
+            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5">
+                <StackPanel>
+                    <TextBlock Text="题目正确率" FontWeight="Bold" Margin="10"/>
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="题目" Binding="{Binding QuestionContent}" Width="*"/>
+                            <DataGridTextColumn Header="尝试次数" Binding="{Binding TotalAttempts}" Width="100"/>
+                            <DataGridTextColumn Header="正确数" Binding="{Binding CorrectCount}" Width="100"/>
+                            <DataGridTextColumn Header="正确率" Binding="{Binding AccuracyRate, StringFormat={}{0:F1}%}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

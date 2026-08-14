@@ -8,16 +8,39 @@
         Title="智能作业批阅平台" Height="800" Width="1200"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Padding" Value="15,8"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Background" Value="#4472C4"/>
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Background" Value="#34495E"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4472C4"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        <Style TargetType="ListBoxItem">
-            <Setter Property="Padding" Value="10,5"/>
+        
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="#27AE60"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        
+        <Style x:Key="DangerButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="#E74C3C"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
         </Style>
     </Window.Resources>
     
@@ -52,6 +75,10 @@
                         Command="{Binding NavigateCommand}" 
                         CommandParameter="Statistics"
                         Style="{StaticResource NavButtonStyle}"/>
+                <Button Content="班级统计" 
+                        Command="{Binding NavigateCommand}" 
+                        CommandParameter="ClassStats"
+                        Style="{StaticResource NavButtonStyle}"/>
                 <Button Content="系统设置" 
                         Command="{Binding NavigateCommand}" 
                         CommandParameter="Settings"
@@ -75,7 +102,30 @@
                        Margin="0,0,0,20"/>
             
             <!-- 内容区域 -->
-            <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ContentControl Content="{Binding CurrentView}">
+                    <ContentControl.Resources>
+                        <DataTemplate x:Key="Assignments">
+                            <AssignmentsView/>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Grading">
+                            <GradingView/>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Students">
+                            <StudentsView/>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Statistics">
+                            <StatisticsView/>
+                        </DataTemplate>
+                        <DataTemplate x:Key="ClassStats">
+                            <ClassStatsView/>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Settings">
+                            <SettingsView/>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+            </ScrollViewer>
             
             <!-- 状态栏 -->
             <TextBlock Grid.Row="2" 

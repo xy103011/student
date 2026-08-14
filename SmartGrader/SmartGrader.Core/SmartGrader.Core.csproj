@@ -5,6 +5,6 @@
     <RootNamespace>SmartGrader.Core</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
   </ItemGroup>
 </Project>
