@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+          IgnorableNamespaces="uap rescap">
+  <Identity Name="SmartGrader" Publisher="CN=SmartGrader" Version="1.0.0.0"/>
+  <Properties>
+    <DisplayName>智能作业批阅平台</DisplayName>
+    <PublisherDisplayName>SmartGrader</PublisherDisplayName>
+    <Description>智能作业批阅平台 - 支持多题型批阅、图片识别、AI智能批阅</Description>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0"/>
+  </Dependencies>
+  <Resources>
+    <Resource Language="x-generate"/>
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="SmartGrader.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="智能作业批阅平台"
+                          Description="智能作业批阅平台"
+                          BackgroundColor="transparent"
+                          Square150x150Logo="Assets\Square150x150Logo.png"
+                          Square44x44Logo="Assets\Square44x44Logo.png"/>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust"/>
+  </Capabilities>
+</Package>
