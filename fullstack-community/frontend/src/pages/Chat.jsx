@@ -52,7 +52,7 @@ export default function Chat() {
         setMessages(data.messages || []);
       } else {
         const { data } = await api.get('/messages/history', { params: { with: room } });
-        setMessages(data.messages);
+        setMessages(data.messages || []);
       }
     } catch (err) {
       setError(errMsg(err));
@@ -60,7 +60,9 @@ export default function Chat() {
   };
 
   const loadConversations = () => {
-    api.get('/messages/conversations').then((res) => setConversations(res.data.conversations)).catch(() => {});
+    api.get('/messages/conversations').then((res) => {
+      setConversations(res.data.conversations || []);
+    }).catch(() => {});
   };
 
   const loadGroups = () => {
