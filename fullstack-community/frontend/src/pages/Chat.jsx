@@ -6,10 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/Avatar';
 import { formatTime } from '../utils';
 
-function privateRoom(a, b) {
-  return `private:${Math.min(a, b)}:${Math.max(a, b)}`;
-}
-
 export default function Chat() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -44,16 +40,18 @@ export default function Chat() {
 
   const loadHistory = async (room, isGroup = false) => {
     try {
-      if (room === 'public') {
-        const { data } = await api.get('/messages/history');
-        setMessages(data?.messages || []);
-      } else if (isGroup) {
-        const { data } = await api.get('/messages/history', { params: { with: `group:${room}` } });
-        setMessages(data?.messages || []);
-      } else {
-        const { data } = await api.get('/messages/history', { params: { with: room } });
-        setMessages(data?.messages || []);
+      setError('');
+      let url = '/messages/history';
+      let params = {};
+      
+      if (isGroup) {
+        params.with = `group:${room}`;
+      } else if (room !== 'public') {
+        params.with = room;
       }
+      
+      const { data } = await api.get(url, { params });
+      setMessages(data?.messages || []);
     } catch (err) {
       console.error('loadHistory error:', err);
       setError(errMsg(err));
@@ -92,6 +90,8 @@ export default function Chat() {
     try {
       setActiveRoom(room);
       setError('');
+      activeRoomRef.current = room;
+      
       if (isGroup) {
         setActiveUser(null);
         setActiveGroup(room);
@@ -105,15 +105,17 @@ export default function Chat() {
         setActiveGroup(null);
         if (room === 'public') {
           setActiveUser(null);
+          await loadHistory('public');
         } else {
           try {
             const { data } = await api.get(`/users/${room}`);
             setActiveUser(data?.user || { id: room, username: `用户${room}` });
+            await loadHistory(room);
           } catch (e) {
             setActiveUser({ id: room, username: `用户${room}` });
+            await loadHistory(room);
           }
         }
-        await loadHistory(room);
       }
       setInput('');
     } catch (err) {
@@ -127,6 +129,7 @@ export default function Chat() {
       navigate('/login');
       return;
     }
+    
     loadConversations();
     loadGroups();
     loadFriends();
@@ -135,83 +138,105 @@ export default function Chat() {
     const s = io('/', { auth: { token: localStorage.getItem('token') } });
     setSocket(s);
 
-    s.on('online', (list) => setOnlineUsers(list));
+    s.on('connect', () => {
+      console.log('Socket connected');
+      setConnecting(false);
+      s.emit('online');
+    });
+
+    s.on('disconnect', () => {
+      console.log('Socket disconnected');
+      setConnecting(true);
+    });
+
+    s.on('online', (list) => {
+      console.log('Online users:', list);
+      setOnlineUsers(list);
+    });
 
     s.on('message', (msg) => {
+      console.log('Received message:', msg);
       const room = activeRoomRef.current;
       const isPublic = msg.room === 'public';
-      const isGroupMsg = msg.room.startsWith('group:');
+      const isGroupMsg = msg.room?.startsWith('group:');
+      const isPrivateMsg = msg.room?.startsWith('private:');
       
-      if (isGroupMsg) {
+      if (isPublic && room === 'public') {
+        setMessages((prev) => [...prev, msg]);
+      } else if (isGroupMsg) {
         const groupId = msg.room.replace('group:', '');
         if (room === groupId) {
           setMessages((prev) => [...prev, msg]);
         }
-      } else if (isPublic) {
-        if (room === 'public') {
+      } else if (isPrivateMsg) {
+        // 私聊消息：检查是否是当前对话
+        const parts = msg.room.replace('private:', '').split(':');
+        const otherUserId = parts[1];
+        if (room === otherUserId) {
           setMessages((prev) => [...prev, msg]);
-        }
-      } else {
-        const isCurrent = room === privateRoom(user.id, msg.room?.replace('private:', '').split(':')[1]);
-        if (isCurrent) {
-          setMessages((prev) => [...prev, msg]);
+          loadConversations();
         }
       }
-      
-      if (!isPublic && !isGroupMsg) loadConversations();
     });
 
-    s.on('connect_error', () => {
+    s.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
       setError('聊天服务连接失败，请刷新重试');
       setConnecting(false);
     });
-    s.on('connect', () => setConnecting(false));
 
     return () => {
       s.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (withId && user) {
-      switchRoom(parseInt(withId, 10));
+      const id = parseInt(withId, 10);
+      if (!isNaN(id)) {
+        switchRoom(id);
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [withId, user]);
 
-  const sendMessage = (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     const content = input.trim();
-    if (!content || !socket) return;
+    if (!content || !socket || !user) return;
     
-    const payload = { content };
-    if (activeRoom.startsWith('group:')) {
-      payload.groupId = activeRoom.replace('group:', '');
-      socket.emit('send_group_message', payload, (res) => {
-        if (res && res.error) {
-          setError(res.error);
-        } else {
-          setInput('');
-        }
-      });
-    } else if (activeRoom !== 'public') {
-      payload.recipientId = activeRoom;
-      socket.emit('send_message', payload, (res) => {
-        if (res && res.error) {
-          setError(res.error);
-        } else {
-          setInput('');
-        }
-      });
-    } else {
-      socket.emit('send_message', payload, (res) => {
-        if (res && res.error) {
-          setError(res.error);
-        } else {
-          setInput('');
-        }
-      });
+    try {
+      if (activeRoom.startsWith('group:')) {
+        // 群聊消息
+        const groupId = activeRoom.replace('group:', '');
+        socket.emit('send_group_message', { groupId, content }, (res) => {
+          if (res && res.error) {
+            setError(res.error);
+          } else {
+            setInput('');
+          }
+        });
+      } else if (activeRoom !== 'public') {
+        // 私聊消息
+        socket.emit('send_message', { recipientId: activeRoom, content }, (res) => {
+          if (res && res.error) {
+            setError(res.error);
+          } else {
+            setInput('');
+          }
+        });
+      } else {
+        // 公共消息
+        socket.emit('send_message', { content }, (res) => {
+          if (res && res.error) {
+            setError(res.error);
+          } else {
+            setInput('');
+          }
+        });
+      }
+    } catch (err) {
+      console.error('sendMessage error:', err);
+      setError(errMsg(err));
     }
   };
 
@@ -229,9 +254,9 @@ export default function Chat() {
       setGroupDesc('');
       setSelectedFriends([]);
       loadGroups();
-      switchRoom(`group:${data.group.id}`, true);
+      switchRoom(data.group.id, true);
     } catch (err) {
-      alert(errMsg(err));
+      setError(errMsg(err));
     } finally {
       setCreating(false);
     }
@@ -269,7 +294,7 @@ export default function Chat() {
             <div
               key={g.id}
               className={`chat-user-item ${activeRoom === `group:${g.id}` ? 'active' : ''}`}
-              onClick={() => switchRoom(`group:${g.id}`, true)}
+              onClick={() => switchRoom(g.id, true)}
             >
               <Avatar name={g.name} color={g.avatarColor} />
               <span>{g.name}</span>
