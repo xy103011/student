@@ -16,9 +16,7 @@ export default function Chat() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [activeRoom, setActiveRoom] = useState('public');
-  const [activeUser, setActiveUser] = useState(null);
-  const [activeGroup, setActiveGroup] = useState(null);
+  const [friends, setFriends] = useState([]);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
@@ -27,8 +25,12 @@ export default function Chat() {
   const [groupName, setGroupName] = useState('');
   const [groupDesc, setGroupDesc] = useState('');
   const [selectedFriends, setSelectedFriends] = useState([]);
-  const [friends, setFriends] = useState([]);
   const [creating, setCreating] = useState(false);
+  
+  // 当前激活的聊天类型：'public' | 'private:'+userId | 'group:'+groupId
+  const [activeRoom, setActiveRoom] = useState('public');
+  const [activeUser, setActiveUser] = useState(null);
+  const [activeGroup, setActiveGroup] = useState(null);
 
   const activeRoomRef = useRef('public');
   activeRoomRef.current = activeRoom;
@@ -50,13 +52,13 @@ export default function Chat() {
         params.with = room;
       }
       
-      console.log('loadHistory:', url, params);
+      console.log('[Chat] loadHistory:', url, params);
       const { data } = await api.get(url, { params });
-      console.log('History loaded:', data?.messages?.length || 0, 'messages');
+      console.log('[Chat] History loaded:', data?.messages?.length || 0, 'messages');
       setMessages(data?.messages || []);
     } catch (err) {
-      console.error('loadHistory error:', err);
-      setError(errMsg(err));
+      console.error('[Chat] loadHistory error:', err);
+      setError(errMsg(err) || '加载消息失败');
       setMessages([]);
     }
   };
@@ -65,7 +67,7 @@ export default function Chat() {
     api.get('/messages/conversations').then((res) => {
       setConversations(res.data?.conversations || []);
     }).catch((err) => {
-      console.error('loadConversations error:', err);
+      console.error('[Chat] loadConversations error:', err);
       setConversations([]);
     });
   };
@@ -74,7 +76,7 @@ export default function Chat() {
     api.get('/groups').then((res) => {
       setGroups(res.data?.groups || []);
     }).catch((err) => {
-      console.error('loadGroups error:', err);
+      console.error('[Chat] loadGroups error:', err);
       setGroups([]);
     });
   };
@@ -83,35 +85,35 @@ export default function Chat() {
     api.get('/friends/me').then((res) => {
       setFriends(res.data?.friends || []);
     }).catch((err) => {
-      console.error('loadFriends error:', err);
+      console.error('[Chat] loadFriends error:', err);
       setFriends([]);
     });
   };
 
   const switchRoom = async (room, isGroup = false) => {
     try {
+      console.log('[Chat] switchRoom called:', room, 'isGroup:', isGroup);
+      
       setActiveRoom(room);
       setError('');
       activeRoomRef.current = room;
       setInput('');
       
-      console.log('switchRoom called:', room, 'isGroup:', isGroup);
-      
       if (isGroup) {
         setActiveUser(null);
         // 从 groups 列表中查找群聊信息
         const group = groups.find(g => g.id === room);
-        console.log('Found group:', group);
+        console.log('[Chat] Found group:', group);
         setActiveGroup(group || { id: room, name: `群聊${room}` });
         
         await loadHistory(room, true);
         
         if (socket && socket.connected) {
           socket.emit('join_group', room, (res) => {
-            console.log('join_group response:', res);
+            console.log('[Chat] join_group response:', res);
           });
         } else {
-          console.warn('Socket not connected');
+          console.warn('[Chat] Socket not connected');
         }
       } else {
         setActiveGroup(null);
@@ -121,27 +123,30 @@ export default function Chat() {
         } else {
           try {
             const { data } = await api.get(`/users/${room}`);
-            console.log('User data:', data);
+            console.log('[Chat] User data:', data);
             setActiveUser(data?.user || { id: room, username: `用户${room}` });
             await loadHistory(room);
           } catch (e) {
-            console.error('Failed to load user:', e);
+            console.error('[Chat] Failed to load user:', e);
             setActiveUser({ id: room, username: `用户${room}` });
             await loadHistory(room);
           }
         }
       }
     } catch (err) {
-      console.error('switchRoom error:', err);
+      console.error('[Chat] switchRoom error:', err);
       setError('加载聊天失败，请刷新重试');
     }
   };
 
+  // 初始化 Socket 连接和数据加载
   useEffect(() => {
     if (!user) {
       navigate('/login');
       return;
     }
+    
+    console.log('[Chat] Component mounted, user:', user?.username);
     
     loadConversations();
     loadGroups();
@@ -152,23 +157,23 @@ export default function Chat() {
     setSocket(s);
 
     s.on('connect', () => {
-      console.log('Socket connected');
+      console.log('[Chat] Socket connected');
       setConnecting(false);
       s.emit('online');
     });
 
     s.on('disconnect', () => {
-      console.log('Socket disconnected');
+      console.log('[Chat] Socket disconnected');
       setConnecting(true);
     });
 
     s.on('online', (list) => {
-      console.log('Online users:', list);
+      console.log('[Chat] Online users:', list);
       setOnlineUsers(list);
     });
 
     s.on('message', (msg) => {
-      console.log('Received message:', msg);
+      console.log('[Chat] Received message:', msg);
       const room = activeRoomRef.current;
       const isPublic = msg.room === 'public';
       const isGroupMsg = msg.room?.startsWith('group:');
@@ -178,14 +183,14 @@ export default function Chat() {
         setMessages((prev) => [...prev, msg]);
       } else if (isGroupMsg) {
         const groupId = msg.room.replace('group:', '');
-        if (room === groupId) {
+        if (room === `group:${groupId}`) {
           setMessages((prev) => [...prev, msg]);
         }
       } else if (isPrivateMsg) {
         // 私聊消息：检查是否是当前对话
         const parts = msg.room.replace('private:', '').split(':');
         const otherUserId = parts[1];
-        if (room === otherUserId) {
+        if (room === `private:${otherUserId}` || room === otherUserId) {
           setMessages((prev) => [...prev, msg]);
           loadConversations();
         }
@@ -193,18 +198,21 @@ export default function Chat() {
     });
 
     s.on('connect_error', (err) => {
-      console.error('Socket connection error:', err);
+      console.error('[Chat] Socket connection error:', err);
       setError('聊天服务连接失败，请刷新重试');
       setConnecting(false);
     });
 
     return () => {
+      console.log('[Chat] Cleaning up socket');
       s.disconnect();
     };
   }, []);
 
+  // 处理 URL 参数中的 with 参数
   useEffect(() => {
     if (withId && user) {
+      console.log('[Chat] URL with parameter:', withId);
       const id = parseInt(withId, 10);
       if (!isNaN(id)) {
         switchRoom(id);
@@ -228,9 +236,10 @@ export default function Chat() {
             setInput('');
           }
         });
-      } else if (activeRoom !== 'public') {
+      } else if (activeRoom.startsWith('private:')) {
         // 私聊消息
-        socket.emit('send_message', { recipientId: activeRoom, content }, (res) => {
+        const recipientId = activeRoom.replace('private:', '');
+        socket.emit('send_message', { recipientId, content }, (res) => {
           if (res && res.error) {
             setError(res.error);
           } else {
@@ -248,8 +257,8 @@ export default function Chat() {
         });
       }
     } catch (err) {
-      console.error('sendMessage error:', err);
-      setError(errMsg(err));
+      console.error('[Chat] sendMessage error:', err);
+      setError(errMsg(err) || '发送失败');
     }
   };
 
@@ -269,18 +278,35 @@ export default function Chat() {
       loadGroups();
       switchRoom(data.group.id, true);
     } catch (err) {
-      setError(errMsg(err));
+      console.error('[Chat] createGroup error:', err);
+      setError(errMsg(err) || '创建群聊失败');
     } finally {
       setCreating(false);
     }
   };
 
   const onlineOthers = onlineUsers.filter((u) => u.id !== user?.id);
-  const title = activeRoom === 'public' 
-    ? '公共聊天室' 
-    : activeGroup 
-      ? activeGroup.name 
-      : activeUser?.username || '私聊';
+  
+  // 计算标题
+  let title = '公共聊天室';
+  if (activeRoom.startsWith('group:')) {
+    const group = groups.find(g => g.id === activeRoom.replace('group:', ''));
+    title = group?.name || `群聊${activeRoom.replace('group:', '')}`;
+  } else if (activeRoom.startsWith('private:')) {
+    const userId = activeRoom.replace('private:', '');
+    title = activeUser?.username || `用户${userId}`;
+  }
+
+  console.log('[Chat] Render:', {
+    activeRoom,
+    activeUser,
+    activeGroup,
+    messagesCount: messages.length,
+    groupsCount: groups.length,
+    friendsCount: friends.length,
+    conversationsCount: conversations.length,
+    connecting
+  });
 
   return (
     <div className="chat-layout">
@@ -324,8 +350,8 @@ export default function Chat() {
           {conversations.map((c) => (
             <div
               key={c.user.id}
-              className={`chat-user-item ${activeRoom === c.user.id ? 'active' : ''}`}
-              onClick={() => switchRoom(c.user.id)}
+              className={`chat-user-item ${activeRoom === `private:${c.user.id}` ? 'active' : ''}`}
+              onClick={() => switchRoom(`private:${c.user.id}`)}
             >
               <Avatar name={c.user.username} color={c.user.avatarColor} />
               <span>{c.user.username}</span>
@@ -342,7 +368,7 @@ export default function Chat() {
               <div
                 key={f.id}
                 className="chat-user-item"
-                onClick={() => switchRoom(f.id)}
+                onClick={() => switchRoom(`private:${f.id}`)}
               >
                 <Avatar name={f.username} color={f.avatarColor} />
                 <span>{f.username}</span>
@@ -435,7 +461,8 @@ export default function Chat() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={activeRoom.startsWith('group:') ? '输入消息，回车发送…' : '输入消息，回车发送…'}
+            placeholder="输入消息，回车发送…"
+            disabled={connecting}
           />
           <button type="submit" className="btn btn-primary" disabled={!input.trim() || connecting}>
             发送
