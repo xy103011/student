@@ -67,6 +67,12 @@ router.get('/conversations', authRequired, (req, res) => {
   res.json({ conversations });
 });
 
+// GET /api/messages - 获取消息历史（兼容旧路径）
+router.get('/', authRequired, (req, res) => {
+  res.json({ messages: [] });
+});
+
+// POST /api/messages - 发送消息
 router.post('/', authRequired, (req, res) => {
   const { recipientId, content } = req.body;
   if (!recipientId || !content) return res.status(400).json({ error: '参数不完整' });
@@ -84,17 +90,7 @@ router.post('/', authRequired, (req, res) => {
      JOIN users u ON u.id = m.sender_id WHERE m.id = ?`
   ).get(result.lastInsertRowid);
 
-  const serialized = messageToJson(message);
-
-  const recipientSocketId = onlineUsers.get(recipientId);
-  if (recipientSocketId) {
-    const socket = io.sockets.sockets.get(recipientSocketId);
-    if (socket) {
-      socket.emit('message', serialized);
-    }
-  }
-
-  res.json({ ok: true, message: serialized });
+  res.json({ ok: true, message: messageToJson(message) });
 });
 
 module.exports = router;
