@@ -108,10 +108,33 @@ db.exec(`
     FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
   );
 
+  CREATE TABLE IF NOT EXISTS groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    creator_id INTEGER NOT NULL,
+    avatar_color TEXT NOT NULL DEFAULT '#6366f1',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE TABLE IF NOT EXISTS group_members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    role TEXT NOT NULL DEFAULT 'member',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (group_id, user_id),
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
   CREATE INDEX IF NOT EXISTS idx_friendships_user ON friendships(user_id);
   CREATE INDEX IF NOT EXISTS idx_friendships_friend ON friendships(friend_id);
   CREATE INDEX IF NOT EXISTS idx_friend_requests_to ON friend_requests(to_user_id, status);
   CREATE INDEX IF NOT EXISTS idx_friend_requests_from ON friend_requests(from_user_id, status);
+  CREATE INDEX IF NOT EXISTS idx_group_members_group ON group_members(group_id);
+  CREATE INDEX IF NOT EXISTS idx_group_members_user ON group_members(user_id);
 `);
 
 function ensureColumn(table, column, ddl) {

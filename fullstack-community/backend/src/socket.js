@@ -103,6 +103,43 @@ function initSocket(server) {
       cb && cb({ ok: true, message: msg });
     });
 
+    socket.on('join_group', (groupId, cb) => {
+      const group = db.prepare('SELECT id FROM groups WHERE id = ?').get(groupId);
+      if (!group) return cb && cb({ error: '群聊不存在' });
+      const member = db.prepare('SELECT id FROM group_members WHERE group_id = ? AND user_id = ?').get(groupId, userId);
+      if (!member) return cb && cb({ error: '你不在该群中' });
+      socket.join(`group:${groupId}`);
+      cb && cb({ ok: true });
+    });
+
+    socket.on('send_group_message', (data, cb) => {
+      const content = (data && data.content ? String(data.content) : '').trim();
+      if (!content) return cb && cb({ error: '消息不能为空' });
+      if (content.length > 1000) return cb && cb({ error: '消息过长' });
+
+      const groupId = parseInt(data.groupId, 10);
+      if (!groupId) return cb && cb({ error: '无效的群聊 ID' });
+
+      const group = db.prepare('SELECT id FROM groups WHERE id = ?').get(groupId);
+      if (!group) return cb && cb({ error: '群聊不存在' });
+
+      const member = db.prepare('SELECT id FROM group_members WHERE group_id = ? AND user_id = ?').get(groupId, userId);
+      if (!member) return cb && cb({ error: '你不在该群中' });
+
+      const room = `group:${groupId}`;
+      const info = db.prepare(
+        'INSERT INTO messages (sender_id, recipient_id, room, content) VALUES (?, ?, ?, ?)'
+      ).run(userId, null, room, content);
+      const row = db.prepare(
+        `SELECT m.*, u.username, u.avatar_color FROM messages m
+         JOIN users u ON u.id = m.sender_id WHERE m.id = ?`
+      ).get(info.lastInsertRowid);
+      const msg = serializeMessage(row);
+
+      io.to(room).emit('message', msg);
+      cb && cb({ ok: true, message: msg });
+    });
+
     socket.on('disconnect', () => {
       onlineUsers.delete(userId);
       socket.broadcast.emit('online', onlineList());

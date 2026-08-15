@@ -15,6 +15,10 @@ function notifText(n) {
       return '评论了你的帖子';
     case 'reply':
       return '回复了你的评论';
+    case 'friend_request':
+      return '请求添加你为好友';
+    case 'friend_accepted':
+      return '接受了你的好友请求';
     default:
       return '与你互动';
   }
@@ -45,6 +49,25 @@ export default function Notifications() {
     load();
   }, [page]);
 
+  const handleFriendRequest = async (n, action) => {
+    try {
+      if (action === 'accept') {
+        await api.post(`/friends/accept/${n.id}`);
+        alert(`已接受 ${n.actor?.username} 的好友请求`);
+      } else {
+        await api.post(`/friends/decline/${n.id}`);
+      }
+      // 从列表中移除
+      setItems((list) => list.filter((x) => x.id !== n.id));
+      // 标记为已读
+      if (!n.isRead) {
+        await api.put(`/notifications/${n.id}/read`);
+      }
+    } catch (err) {
+      alert(errMsg(err));
+    }
+  };
+
   const openNotif = async (n) => {
     if (!n.isRead) {
       try {
@@ -54,6 +77,9 @@ export default function Notifications() {
         /* ignore */
       }
     }
+    // 好友请求通知不跳转，显示操作按钮
+    if (n.type === 'friend_request' || n.type === 'friend_accepted') return;
+    
     if (n.postId) {
       navigate(`/posts/${n.postId}`);
     } else if (n.type === 'follow' && n.actor) {
@@ -78,7 +104,7 @@ export default function Notifications() {
       </div>
       {error && <div className="error-banner">{error}</div>}
       {loading ? (
-        <div className="empty-state">加载中…</div>
+        <div className="empty-state">加载中...</div>
       ) : items.length === 0 ? (
         <div className="empty-state">还没有通知。</div>
       ) : (
@@ -88,11 +114,46 @@ export default function Notifications() {
               key={n.id}
               className={`notif-item ${n.isRead ? '' : 'unread'}`}
               onClick={() => openNotif(n)}
+              style={{ cursor: 'pointer' }}
             >
               <Avatar name={n.actor?.username || '?'} color={n.actor?.avatarColor} />
-              <div className="notif-body">
-                <div>
-                  <strong>{n.actor?.username || '系统'}</strong> {notifText(n)}
+              <div className="notif-body" style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <strong>{n.actor?.username || '系统'}</strong> {notifText(n)}
+                  </div>
+                  {n.type === 'friend_request' && (
+                    <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 12 }}>
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFriendRequest(n, 'accept');
+                        }}
+                      >
+                        接受
+                      </button>
+                      <button
+                        className="btn btn-sm"
+                        style={{ color: 'var(--danger)' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFriendRequest(n, 'decline');
+                        }}
+                      >
+                        拒绝
+                      </button>
+                    </div>
+                  )}
+                  {n.type === 'friend_accepted' && (
+                    <Link
+                      to={`/users/${n.actor?.id}`}
+                      className="btn btn-sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      查看主页
+                    </Link>
+                  )}
                 </div>
                 {n.content && n.type !== 'like' && (
                   <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 2 }}>
