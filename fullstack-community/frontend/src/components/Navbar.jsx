@@ -52,6 +52,7 @@ export default function Navbar() {
         </form>
         <div className="nav-actions">
           <Link className="btn btn-sm" to="/chat">聊天</Link>
+          <Link className="btn btn-sm" to="/friends">好友</Link>
           {user ? (
             <>
               <Link className="btn btn-sm" to="/notifications" style={{ position: 'relative' }}>

@@ -94,8 +94,8 @@ router.get('/feed', authRequired, (req, res) => {
   const search = (req.query.search || '').trim();
   const tag = (req.query.tag || '').trim();
 
-  const conditions = ['(user_id = ? OR user_id IN (SELECT followee_id FROM follows WHERE follower_id = ?))'];
-  const params = [req.user.id, req.user.id];
+  const conditions = ['(user_id = ? OR user_id IN (SELECT followee_id FROM follows WHERE follower_id = ?) OR user_id IN (SELECT friend_id FROM friendships WHERE user_id = ?))'];
+  const params = [req.user.id, req.user.id, req.user.id];
   if (search) {
     conditions.push('(title LIKE ? OR content LIKE ?)');
     params.push(`%${search}%`, `%${search}%`);

@@ -17,6 +17,7 @@ function profileOf(user, viewerId = null) {
   return {
     id: user.id,
     username: user.username,
+    friendCode: user.friend_code,
     bio: user.bio,
     avatarColor: user.avatar_color,
     role: user.role,
@@ -30,12 +31,12 @@ function profileOf(user, viewerId = null) {
 }
 
 function userBrief(u) {
-  return { id: u.id, username: u.username, bio: u.bio, avatarColor: u.avatar_color };
+  return { id: u.id, username: u.username, bio: u.bio, avatarColor: u.avatar_color, friendCode: u.friend_code };
 }
 
 router.get('/:id', optionalAuth, (req, res) => {
   const user = db.prepare(
-    'SELECT id, username, bio, avatar_color, role, banned, created_at FROM users WHERE id = ?'
+    'SELECT id, username, bio, avatar_color, role, banned, created_at, friend_code FROM users WHERE id = ?'
   ).get(parseInt(req.params.id, 10));
   if (!user) return res.status(404).json({ error: '用户不存在' });
   res.json({ user: profileOf(user, req.user ? req.user.id : null) });
@@ -46,7 +47,7 @@ router.put('/me', authRequired, (req, res) => {
   const safeBio = typeof bio === 'string' ? bio.slice(0, 200) : '';
   db.prepare('UPDATE users SET bio = ? WHERE id = ?').run(safeBio, req.user.id);
   const user = db.prepare(
-    'SELECT id, username, bio, avatar_color, role, banned, created_at FROM users WHERE id = ?'
+    'SELECT id, username, bio, avatar_color, role, banned, created_at, friend_code FROM users WHERE id = ?'
   ).get(req.user.id);
   res.json({ user: profileOf(user, req.user.id) });
 });
@@ -85,6 +86,26 @@ router.get('/:id/following', (req, res) => {
      JOIN users u ON u.id = f.followee_id WHERE f.follower_id = ? ORDER BY f.created_at DESC`
   ).all(parseInt(req.params.id, 10));
   res.json({ users: rows.map(userBrief) });
+});
+
+// GET /api/users - 搜索用户（通过用户名或好友码）
+router.get('/', (req, res) => {
+  const q = (req.query.q || '').trim();
+  if (!q) return res.json({ users: [] });
+  let rows;
+  if (/^[A-Z0-9]{6}$/.test(q.toUpperCase())) {
+    rows = db.prepare(
+      'SELECT id, username, friend_code, bio, avatar_color, banned, role FROM users WHERE friend_code = ?'
+    ).all(q.toUpperCase());
+  } else {
+    rows = db.prepare(
+      "SELECT id, username, friend_code, bio, avatar_color, banned, role FROM users WHERE username LIKE ? LIMIT 20"
+    ).all(`%${q}%`);
+  }
+  res.json({ users: rows.map(u => ({
+    id: u.id, username: u.username, friendCode: u.friend_code,
+    bio: u.bio, avatarColor: u.avatar_color, banned: u.banned, role: u.role,
+  })) });
 });
 
 module.exports = router;

@@ -88,16 +88,30 @@ db.exec(`
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE
   );
 
-  CREATE INDEX IF NOT EXISTS idx_posts_user ON posts(user_id);
-  CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
-  CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
-  CREATE INDEX IF NOT EXISTS idx_likes_post ON likes(post_id);
-  CREATE INDEX IF NOT EXISTS idx_follows_follower ON follows(follower_id);
-  CREATE INDEX IF NOT EXISTS idx_follows_followee ON follows(followee_id);
-  CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read);
-  CREATE INDEX IF NOT EXISTS idx_messages_room ON messages(room, id);
-  CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
-  CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient_id);
+  CREATE TABLE IF NOT EXISTS friendships (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    friend_id INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (user_id, friend_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (friend_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE TABLE IF NOT EXISTS friend_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    from_user_id INTEGER NOT NULL,
+    to_user_id INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_friendships_user ON friendships(user_id);
+  CREATE INDEX IF NOT EXISTS idx_friendships_friend ON friendships(friend_id);
+  CREATE INDEX IF NOT EXISTS idx_friend_requests_to ON friend_requests(to_user_id, status);
+  CREATE INDEX IF NOT EXISTS idx_friend_requests_from ON friend_requests(from_user_id, status);
 `);
 
 function ensureColumn(table, column, ddl) {
@@ -110,5 +124,37 @@ function ensureColumn(table, column, ddl) {
 ensureColumn('users', 'role', "role TEXT NOT NULL DEFAULT 'user'");
 ensureColumn('users', 'banned', "banned INTEGER NOT NULL DEFAULT 0");
 ensureColumn('comments', 'parent_id', 'parent_id INTEGER');
+ensureColumn('users', 'friend_code', 'friend_code TEXT');
+
+function ensureFriendCode() {
+  const noCode = db.prepare("SELECT id, username FROM users WHERE friend_code IS NULL OR friend_code = ''").all();
+  for (const u of noCode) {
+    const code = generateFriendCode(u.username);
+    db.prepare('UPDATE users SET friend_code = ? WHERE id = ?').run(code, u.id);
+  }
+  // Add unique constraint via trigger
+  db.exec(`
+    CREATE TRIGGER IF NOT EXISTS unique_friend_code
+    BEFORE INSERT ON users
+    FOR EACH ROW WHEN NEW.friend_code IS NOT NULL
+    BEGIN
+      SELECT CASE WHEN (SELECT id FROM users WHERE friend_code = NEW.friend_code) IS NOT NULL
+        THEN RAISE(ABORT, 'Duplicate friend code') END;
+    END;
+  `);
+}
+
+function generateFriendCode(username) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code;
+  do {
+    let r = '';
+    for (let i = 0; i < 6; i++) r += chars[Math.floor(Math.random() * chars.length)];
+    code = r;
+  } while (db.prepare('SELECT id FROM users WHERE friend_code = ?').get(code));
+  return code;
+}
+
+ensureFriendCode();
 
 module.exports = db;

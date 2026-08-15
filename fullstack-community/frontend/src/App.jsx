@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import Notifications from './pages/Notifications';
 import Chat from './pages/Chat';
 import Admin from './pages/Admin';
+import Friends from './pages/Friends';
+import Users from './pages/Users';
 import Install from './pages/install/Install';
 import { useAuth } from './context/AuthContext';
 import { useSite } from './context/SiteContext';
@@ -56,6 +58,8 @@ export default function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/friends" element={<Friends />} />
+          <Route path="/users" element={<Users />} />
         </Routes>
       </main>
       <footer className="footer">{site.name} · 分享 · 交流 · 成长</footer>

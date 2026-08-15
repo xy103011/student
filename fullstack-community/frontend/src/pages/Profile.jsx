@@ -19,8 +19,10 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [followBusy, setFollowBusy] = useState(false);
-  const [listMode, setListMode] = useState(null); // null | 'followers' | 'following'
+  const [listMode, setListMode] = useState(null);
   const [userList, setUserList] = useState([]);
+  const [friendBusy, setFriendBusy] = useState(false);
+  const [friendship, setFriendship] = useState(null);
 
   const loadProfile = () => {
     setLoading(true);
@@ -62,6 +64,50 @@ export default function Profile() {
       setFollowBusy(false);
     }
   };
+
+  const loadFriendship = async () => {
+    if (!me || me.id === profile.id) {
+      setFriendship(null);
+      return;
+    }
+    try {
+      const { data } = await api.get(`/friends/check/${id}`);
+      setFriendship(data.relationship);
+    } catch (err) {
+      setFriendship(null);
+    }
+  };
+
+  const sendFriendRequest = async () => {
+    if (!me) {
+      navigate('/login');
+      return;
+    }
+    setFriendBusy(true);
+    try {
+      await api.post(`/friends/request/${id}`);
+      setFriendship('pending_sent');
+      alert(`已向 ${profile.username} 发送好友请求`);
+    } catch (err) {
+      alert(errMsg(err));
+    } finally {
+      setFriendBusy(false);
+    }
+  };
+
+  const cancelFriendRequest = async () => {
+    if (!confirm('确定要取消好友请求吗？')) return;
+    try {
+      await api.post(`/friends/cancel/${id}`);
+      setFriendship(null);
+    } catch (err) {
+      alert(errMsg(err));
+    }
+  };
+
+  useEffect(() => {
+    loadFriendship();
+  }, [id, me]);
 
   const openList = async (mode) => {
     setListMode(mode);
@@ -123,6 +169,11 @@ export default function Profile() {
           ) : (
             <>
               <div className="bio">{profile.bio || '这个人很懒，什么都没写。'}</div>
+              {profile.friendCode && (
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
+                  好友码: {profile.friendCode}
+                </div>
+              )}
               {isMe ? (
                 <button className="btn btn-sm" style={{ marginTop: 8 }} onClick={() => setEditing(true)}>
                   编辑简介
@@ -139,6 +190,23 @@ export default function Profile() {
                   <button className="btn btn-sm" onClick={() => navigate(`/chat?with=${profile.id}`)}>
                     私聊
                   </button>
+                  {friendship === 'friends' ? (
+                    <span className="btn btn-sm" style={{ opacity: 0.6, cursor: 'default' }}>好友</span>
+                  ) : friendship === 'pending_sent' ? (
+                    <button className="btn btn-sm" style={{ color: 'var(--danger)' }} onClick={cancelFriendRequest}>
+                      已发送请求
+                    </button>
+                  ) : friendship === 'pending_received' ? (
+                    <span className="btn btn-sm btn-primary" style={{ opacity: 0.6, cursor: 'default' }}>等待对方接受</span>
+                  ) : (
+                    <button
+                      className="btn btn-sm btn-primary"
+                      onClick={sendFriendRequest}
+                      disabled={friendBusy}
+                    >
+                      {friendBusy ? '处理中...' : '添加好友'}
+                    </button>
+                  )}
                 </div>
               )}
             </>

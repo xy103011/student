@@ -18,6 +18,7 @@ function publicUser(user) {
     id: user.id,
     username: user.username,
     email: user.email,
+    friendCode: user.friend_code,
     bio: user.bio,
     avatarColor: user.avatar_color,
     role: user.role,

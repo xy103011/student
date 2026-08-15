@@ -11,6 +11,7 @@ const userRoutes = require('./routes/users');
 const notificationRoutes = require('./routes/notifications');
 const messageRoutes = require('./routes/messages');
 const adminRoutes = require('./routes/admin');
+const friendRoutes = require('./routes/friends');
 
 const app = express();
 app.use(cors());
@@ -41,6 +42,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/friends', friendRoutes);
 app.use('/api/admin', adminRoutes);
 
 app.use((req, res) => {
