@@ -70,14 +70,6 @@ router.get('/history', authRequired, (req, res) => {
     ).all(queryRoom).reverse();
     return res.json({ room: queryRoom, messages: messages.map(messageToJson) });
   }
-    const messages = db.prepare(
-      `SELECT m.*, u.username, u.avatar_color FROM messages m
-       JOIN users u ON u.id = m.sender_id
-       WHERE m.room = ?
-       ORDER BY m.id DESC LIMIT 200`
-    ).all(queryRoom).reverse();
-    return res.json({ room: queryRoom, messages: messages.map(messageToJson) });
-  }
   
   // 兼容旧的数字格式，转换为 private:格式
   const targetId = parseInt(withId, 10);
@@ -125,7 +117,7 @@ router.get('/conversations', authRequired, (req, res) => {
   res.json({ conversations });
 });
 
-// POST /api/messages - 发送私聊消息
+// POST /api/messages - 发送消息
 router.post('/', authRequired, (req, res) => {
   const { recipientId, content, groupId } = req.body;
   
