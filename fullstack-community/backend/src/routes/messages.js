@@ -56,12 +56,20 @@ router.get('/history', authRequired, (req, res) => {
     console.log('[Messages] Private room query:', room);
     // 如果格式是 private:X，需要补全为 private:currentUser:X
     let queryRoom = room;
-    if (room.match(/^private:\d+$/)) {
+    if (room.match(/^private:\d+$/) && !room.match(/^private:\d+:\d+$/)) {
       // 格式是 private:userId，需要补全
-      const userId = room.replace('private:', '');
-      queryRoom = privateRoom(req.user.id, parseInt(userId, 10));
-      console.log('[Messages] Expanded to:', queryRoom);
+      const userId = parseInt(room.replace('private:', ''), 10);
+      queryRoom = privateRoom(req.user.id, userId);
+      console.log('[Messages] Expanded private:', room, 'to', queryRoom);
     }
+    const messages = db.prepare(
+      `SELECT m.*, u.username, u.avatar_color FROM messages m
+       JOIN users u ON u.id = m.sender_id
+       WHERE m.room = ?
+       ORDER BY m.id DESC LIMIT 200`
+    ).all(queryRoom).reverse();
+    return res.json({ room: queryRoom, messages: messages.map(messageToJson) });
+  }
     const messages = db.prepare(
       `SELECT m.*, u.username, u.avatar_color FROM messages m
        JOIN users u ON u.id = m.sender_id
