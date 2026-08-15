@@ -23,7 +23,8 @@ function messageToJson(m) {
 
 // GET /api/messages/history - 获取消息历史
 router.get('/history', authRequired, (req, res) => {
-  const { with: withId } = req.query;
+  const withId = req.query.with;
+  console.log('[Messages] Query with:', withId, 'type:', typeof withId);
   
   if (!withId) {
     // 获取公共消息
@@ -37,8 +38,9 @@ router.get('/history', authRequired, (req, res) => {
   }
   
   // 判断是群聊还是私聊
-  if (typeof withId === 'string' && withId.startsWith('group:')) {
-    const groupId = parseInt(withId.replace('group:', ''), 10);
+  if (String(withId).startsWith('group:')) {
+    const groupId = parseInt(String(withId).replace('group:', ''), 10);
+    console.log('[Messages] Group ID:', groupId);
     const messages = db.prepare(
       `SELECT m.*, u.username, u.avatar_color FROM messages m
        JOIN users u ON u.id = m.sender_id
@@ -48,9 +50,10 @@ router.get('/history', authRequired, (req, res) => {
     return res.json({ room: `group:${groupId}`, messages: messages.map(messageToJson) });
   }
   
-  if (typeof withId === 'string' && withId.startsWith('private:')) {
+  if (String(withId).startsWith('private:')) {
     // 私聊消息：直接使用 room 查询
-    const room = withId;
+    const room = String(withId);
+    console.log('[Messages] Private room:', room);
     const messages = db.prepare(
       `SELECT m.*, u.username, u.avatar_color FROM messages m
        JOIN users u ON u.id = m.sender_id
@@ -63,10 +66,12 @@ router.get('/history', authRequired, (req, res) => {
   // 兼容旧的数字格式，转换为 private:格式
   const targetId = parseInt(withId, 10);
   if (isNaN(targetId)) {
+    console.log('[Messages] Invalid ID:', withId);
     return res.status(400).json({ error: '无效的用户 ID' });
   }
   
   const room = privateRoom(req.user.id, targetId);
+  console.log('[Messages] Computing room:', room);
   const messages = db.prepare(
     `SELECT m.*, u.username, u.avatar_color FROM messages m
      JOIN users u ON u.id = m.sender_id
