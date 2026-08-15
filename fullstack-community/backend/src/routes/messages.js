@@ -39,8 +39,8 @@ router.get('/history', authRequired, (req, res) => {
   const targetId = parseInt(withId, 10);
   
   // 判断是私聊还是群聊
-  if (String(withId).startsWith('group:')) {
-    const groupId = targetId.replace('group:', '');
+  if (typeof withId === 'string' && withId.startsWith('group:')) {
+    const groupId = parseInt(withId.replace('group:', ''), 10);
     const messages = db.prepare(
       `SELECT m.*, u.username, u.avatar_color FROM messages m
        JOIN users u ON u.id = m.sender_id
