@@ -1,54 +1,69 @@
+/* ============================================
+   Design System
+   ============================================ */
 :root {
-  --bg: #f6f7f9;
+  /* Colors */
+  --bg: #fafafa;
   --card: #ffffff;
-  --border: #e5e7eb;
-  --text: #1f2937;
+  --border: #e5e5e5;
+  --border-soft: #f0f0f0;
+
+  /* Text */
+  --text: #111827;
   --text-soft: #374151;
   --text-muted: #6b7280;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --primary-soft: #eef2ff;
-  --primary-soft-hover: #e0e7ff;
-  --danger: #ef4444;
+
+  /* Primary */
+  --primary: #1a56db;
+  --primary-hover: #1544b0;
+  --primary-soft: #eff6ff;
+  --primary-soft-hover: #dbeafe;
+
+  /* Danger */
+  --danger: #dc2626;
   --danger-soft: #fef2f2;
   --danger-border: #fecaca;
-  --code-bg: #f3f4f6;
-  --hover: #f9fafb;
-  --radius: 12px;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Success */
+  --success: #059669;
+  --success-soft: #ecfdf5;
+
+  /* Code */
+  --code-bg: #f4f4f5;
+
+  /* Hover */
+  --hover: #f9f9f9;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* Border radius */
+  --radius: 6px;
+  --radius-lg: 8px;
 }
 
-[data-theme='dark'] {
-  --bg: #0f1115;
-  --card: #1a1d24;
-  --border: #2a2e37;
-  --text: #e5e7eb;
-  --text-soft: #d1d5db;
-  --text-muted: #9ca3af;
-  --primary: #818cf8;
-  --primary-hover: #6366f1;
-  --primary-soft: #262b3d;
-  --primary-soft-hover: #323852;
-  --danger: #f87171;
-  --danger-soft: #2a1a1c;
-  --danger-border: #5b2a2e;
-  --code-bg: #1f2430;
-  --hover: #20242d;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
+/* ============================================
+   Reset & Base
+   ============================================ */
 * {
   box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', sans-serif;
-  background: var(--bg);
+  font-size: 15px;
+  line-height: 1.65;
   color: var(--text);
-  line-height: 1.6;
-  transition: background 0.2s, color 0.2s;
+  background: var(--bg);
 }
 
 a {
@@ -61,36 +76,48 @@ button {
   cursor: pointer;
 }
 
+/* ============================================
+   Loading
+   ============================================ */
 .loading-screen {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
+  font-size: 14px;
 }
 
+/* ============================================
+   Layout
+   ============================================ */
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--bg);
 }
 
 .container {
   width: 100%;
-  max-width: 860px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 20px;
   flex: 1;
 }
 
 .footer {
   text-align: center;
-  padding: 24px;
+  padding: 28px 20px;
   color: var(--text-muted);
   font-size: 13px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
 }
 
-/* Navbar */
+/* ============================================
+   Navbar
+   ============================================ */
 .navbar {
   background: var(--card);
   border-bottom: 1px solid var(--border);
@@ -102,16 +129,18 @@ button {
 .navbar-inner {
   max-width: 960px;
   margin: 0 auto;
-  padding: 10px 16px;
+  padding: 0 20px;
+  height: 52px;
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
 .brand {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--primary);
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
@@ -119,27 +148,34 @@ button {
   flex: 1;
   display: flex;
   gap: 8px;
+  max-width: 320px;
 }
 
 .nav-search input {
   flex: 1;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
   outline: none;
   background: var(--bg);
   color: var(--text);
+  transition: border-color 0.15s;
 }
 
 .nav-search input:focus {
   border-color: var(--primary);
 }
 
+.nav-search input::placeholder {
+  color: var(--text-muted);
+}
+
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  margin-left: auto;
 }
 
 .nav-icon-btn {
@@ -147,9 +183,10 @@ button {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 18px;
+  font-size: 17px;
   padding: 4px;
   line-height: 1;
+  transition: color 0.15s;
 }
 
 .nav-icon-btn:hover {
@@ -158,8 +195,8 @@ button {
 
 .badge {
   position: absolute;
-  top: -4px;
-  right: -6px;
+  top: -3px;
+  right: -5px;
   background: var(--danger);
   color: #fff;
   font-size: 10px;
@@ -170,8 +207,10 @@ button {
   align-items: center;
   justify-content: center;
   padding: 0 4px;
+  font-weight: 600;
 }
 
+/* Avatar */
 .avatar {
   width: 32px;
   height: 32px;
@@ -180,31 +219,36 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   flex-shrink: 0;
 }
 
 .avatar-lg {
-  width: 56px;
-  height: 56px;
-  font-size: 22px;
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
 }
 
-/* Buttons */
+/* ============================================
+   Buttons
+   ============================================ */
 .btn {
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 7px 14px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--card);
-  color: var(--text);
-  font-size: 14px;
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 500;
   transition: all 0.15s;
+  line-height: 1.4;
 }
 
 .btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: #d1d5db;
+  color: var(--text);
+  background: var(--hover);
 }
 
 .btn-primary {
@@ -224,56 +268,75 @@ button {
 }
 
 .btn-danger:hover {
-  border-color: var(--danger);
+  border-color: var(--danger-border);
   color: var(--danger);
+  background: var(--danger-soft);
 }
 
 .btn-sm {
   padding: 4px 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-/* Cards */
+/* ============================================
+   Cards
+   ============================================ */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
 }
 
+.card-pad {
+  padding: 14px 16px;
+}
+
+/* ============================================
+   Post Cards
+   ============================================ */
 .post-card {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s, border-color 0.15s;
 }
 
 .post-card:hover {
-  border-color: var(--primary-soft-hover);
+  border-color: #d1d5db;
+  box-shadow: var(--shadow);
 }
 
 .post-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   color: var(--text);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
 }
 
 .post-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
 .post-meta .name {
-  color: var(--text);
+  color: var(--text-soft);
   font-weight: 600;
 }
 
@@ -281,6 +344,8 @@ button {
   color: var(--text-soft);
   white-space: pre-wrap;
   word-break: break-word;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .post-content.clamp {
@@ -295,31 +360,39 @@ button {
   align-items: center;
   gap: 16px;
   margin-top: 12px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
+/* ============================================
+   Tags
+   ============================================ */
 .tags {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
 .tag {
-  padding: 2px 10px;
+  padding: 2px 9px;
   border-radius: 999px;
   background: var(--primary-soft);
   color: var(--primary);
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
   border: none;
+  transition: background 0.15s;
 }
 
 .tag:hover {
   background: var(--primary-soft-hover);
 }
 
+/* ============================================
+   Stat Buttons
+   ============================================ */
 .stat-btn {
   display: inline-flex;
   align-items: center;
@@ -327,8 +400,10 @@ button {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 13px;
-  padding: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  transition: all 0.15s;
 }
 
 .stat-btn.active {
@@ -338,173 +413,219 @@ button {
 
 .stat-btn:hover {
   color: var(--primary);
+  background: var(--primary-soft);
 }
 
-/* Tabs */
+/* ============================================
+   Tabs
+   ============================================ */
 .tabs {
   display: flex;
-  gap: 4px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 4px;
+  gap: 2px;
+  background: var(--border-soft);
+  border-radius: var(--radius);
+  padding: 3px;
+  margin-bottom: 16px;
 }
 
 .tab {
-  padding: 6px 16px;
-  border-radius: 8px;
+  padding: 5px 14px;
+  border-radius: var(--radius);
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.tab:hover {
+  color: var(--text);
+  background: var(--card);
 }
 
 .tab.active {
-  background: var(--primary);
-  color: #fff;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Auth pages */
+/* ============================================
+   Auth Pages
+   ============================================ */
 .auth-wrap {
   max-width: 400px;
-  margin: 48px auto;
+  margin: 56px auto;
 }
 
 .auth-card {
-  padding: 28px;
+  padding: 28px 32px;
 }
 
 .auth-card h1 {
-  font-size: 22px;
+  font-size: 20px;
+  font-weight: 700;
   margin: 0 0 4px;
+  letter-spacing: -0.02em;
 }
 
 .auth-card .subtitle {
   color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 20px;
+  font-size: 13px;
+  margin-bottom: 24px;
 }
 
+/* ============================================
+   Form Fields
+   ============================================ */
 .field {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .field label {
   display: block;
-  font-size: 14px;
-  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 5px;
   color: var(--text-soft);
 }
 
 .field input,
 .field textarea {
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 11px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   font-size: 14px;
   outline: none;
   font-family: inherit;
-  background: var(--bg);
+  background: var(--card);
   color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .field input:focus,
 .field textarea:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.08);
 }
 
 .field textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 90px;
 }
 
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================
+   Error & Info Banners
+   ============================================ */
 .error-banner {
   background: var(--danger-soft);
   border: 1px solid var(--danger-border);
   color: var(--danger);
   padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
   margin-bottom: 16px;
 }
 
 .auth-card .btn-primary {
   width: 100%;
-  padding: 11px;
-  font-size: 15px;
+  padding: 9px;
+  font-size: 14px;
+  margin-top: 4px;
 }
 
 .auth-switch {
   text-align: center;
   margin-top: 16px;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .auth-switch a {
   color: var(--primary);
+  font-weight: 500;
 }
 
-/* Home */
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Home
+   ============================================ */
 .home-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0 16px;
+  margin: 24px 0 16px;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .home-header h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .empty-state {
   text-align: center;
-  padding: 48px 0;
+  padding: 56px 0;
   color: var(--text-muted);
+  font-size: 14px;
 }
 
-/* Pagination */
+/* ============================================
+   Pagination
+   ============================================ */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin: 24px 0;
-  font-size: 14px;
+  gap: 6px;
+  margin: 28px 0;
+  font-size: 13px;
 }
 
-/* Post detail */
+/* ============================================
+   Post Detail
+   ============================================ */
 .post-detail {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .post-detail .post-content {
   margin: 16px 0;
   font-size: 15px;
+  line-height: 1.7;
 }
 
 .comments-section {
-  margin: 24px 0;
+  margin: 28px 0;
 }
 
 .comments-section h3 {
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
   margin: 0 0 16px;
 }
 
 .comment {
   display: flex;
   gap: 10px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .comment.reply {
-  margin-left: 42px;
+  margin-left: 40px;
 }
 
 .comment-body {
@@ -516,7 +637,7 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
   margin-bottom: 4px;
   flex-wrap: wrap;
@@ -531,14 +652,16 @@ button {
   font-size: 14px;
   white-space: pre-wrap;
   word-break: break-word;
+  line-height: 1.6;
 }
 
 .reply-btn {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 11px;
   padding: 0;
+  transition: color 0.15s;
 }
 
 .reply-btn:hover {
@@ -554,16 +677,17 @@ button {
 
 .comment-form textarea {
   flex: 1;
-  padding: 10px 12px;
+  padding: 8px 11px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
   outline: none;
   resize: vertical;
   min-height: 60px;
   font-family: inherit;
-  background: var(--bg);
+  background: var(--card);
   color: var(--text);
+  transition: border-color 0.15s;
 }
 
 .comment-form textarea:focus {
@@ -576,12 +700,14 @@ button {
   margin-bottom: 6px;
 }
 
-/* Profile */
+/* ============================================
+   Profile
+   ============================================ */
 .profile-header {
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  margin: 24px 0;
+  margin: 28px 0 20px;
 }
 
 .profile-info {
@@ -590,18 +716,21 @@ button {
 
 .profile-info h1 {
   margin: 0 0 4px;
-  font-size: 22px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .profile-info .bio {
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 4px;
 }
 
 .profile-info .stats {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .edit-bio {
@@ -619,12 +748,13 @@ button {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  margin-top: 12px;
 }
 
 .follow-section {
-  margin-top: 12px;
+  margin-top: 14px;
   display: flex;
-  gap: 16px;
+  gap: 20px;
 }
 
 .follow-link {
@@ -634,6 +764,7 @@ button {
   background: none;
   border: none;
   padding: 0;
+  transition: color 0.15s;
 }
 
 .follow-link:hover {
@@ -644,7 +775,9 @@ button {
   color: var(--text);
 }
 
-/* Notifications */
+/* ============================================
+   Notifications
+   ============================================ */
 .notif-list {
   margin-top: 20px;
 }
@@ -652,9 +785,10 @@ button {
 .notif-item {
   display: flex;
   gap: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-soft);
   cursor: pointer;
+  transition: background 0.15s;
 }
 
 .notif-item:hover {
@@ -671,20 +805,24 @@ button {
 
 .notif-body {
   flex: 1;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .notif-body .time {
   color: var(--text-muted);
-  font-size: 12px;
-  margin-top: 2px;
+  font-size: 11px;
+  margin-top: 3px;
 }
 
-/* Markdown */
+/* ============================================
+   Markdown
+   ============================================ */
 .markdown-body {
   color: var(--text-soft);
   word-break: break-word;
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .markdown-body h1,
@@ -692,46 +830,50 @@ button {
 .markdown-body h3,
 .markdown-body h4 {
   color: var(--text);
-  margin: 1em 0 0.5em;
+  margin: 1em 0 0.4em;
   line-height: 1.3;
+  font-weight: 600;
 }
 
 .markdown-body h1 {
   font-size: 1.5em;
+  letter-spacing: -0.02em;
 }
 
 .markdown-body h2 {
-  font-size: 1.3em;
+  font-size: 1.25em;
+  letter-spacing: -0.01em;
 }
 
 .markdown-body p {
-  margin: 0.6em 0;
+  margin: 0.5em 0;
 }
 
 .markdown-body ul,
 .markdown-body ol {
   padding-left: 1.5em;
-  margin: 0.6em 0;
+  margin: 0.5em 0;
 }
 
 .markdown-body li {
-  margin: 0.2em 0;
+  margin: 0.15em 0;
 }
 
 .markdown-body code {
   background: var(--code-bg);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.9em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.88em;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 .markdown-body pre {
   background: var(--code-bg);
   padding: 14px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   overflow-x: auto;
   margin: 0.8em 0;
+  border: 1px solid var(--border-soft);
 }
 
 .markdown-body pre code {
@@ -742,33 +884,42 @@ button {
 .markdown-body blockquote {
   border-left: 3px solid var(--primary);
   margin: 0.8em 0;
-  padding: 4px 16px;
+  padding: 4px 14px;
   color: var(--text-muted);
   background: var(--hover);
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 
 .markdown-body table {
   border-collapse: collapse;
   margin: 0.8em 0;
   width: 100%;
+  font-size: 13px;
 }
 
 .markdown-body th,
 .markdown-body td {
   border: 1px solid var(--border);
-  padding: 6px 12px;
+  padding: 7px 11px;
 }
 
 .markdown-body th {
   background: var(--hover);
+  font-weight: 600;
 }
 
 .markdown-body img {
   max-width: 100%;
+  border-radius: var(--radius);
 }
 
 .markdown-body a {
   color: var(--primary);
+}
+
+.markdown-body a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
 .markdown-body hr {
@@ -777,12 +928,15 @@ button {
   margin: 1em 0;
 }
 
-/* Markdown editor */
+/* ============================================
+   Markdown Editor
+   ============================================ */
 .md-editor {
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--card);
+  box-shadow: var(--shadow-sm);
 }
 
 .md-editor:focus-within {
@@ -802,9 +956,10 @@ button {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius);
+  transition: all 0.15s;
 }
 
 .md-tool:hover {
@@ -814,6 +969,7 @@ button {
 
 .md-tool.active {
   color: var(--primary);
+  background: var(--primary-soft);
 }
 
 .md-preview-toggle {
@@ -825,40 +981,39 @@ button {
   min-height: 240px;
   border: none;
   outline: none;
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-size: 14px;
   font-family: inherit;
   resize: vertical;
   background: var(--card);
   color: var(--text);
+  line-height: 1.6;
 }
 
 .md-preview {
-  padding: 12px 14px;
+  padding: 14px 16px;
   min-height: 240px;
   max-height: 480px;
   overflow-y: auto;
 }
 
-.card-pad {
-  padding: 12px 14px;
-}
-
-/* Chat */
+/* ============================================
+   Chat
+   ============================================ */
 .chat-layout {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   margin-top: 20px;
-  height: calc(100vh - 140px);
-  min-height: 480px;
+  height: calc(100vh - 130px);
+  min-height: 440px;
 }
 
 .chat-sidebar {
-  width: 240px;
+  width: 220px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   overflow-y: auto;
 }
 
@@ -868,20 +1023,22 @@ button {
   flex-direction: column;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .chat-header {
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
   font-weight: 600;
+  font-size: 14px;
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -890,7 +1047,7 @@ button {
 .chat-msg {
   display: flex;
   gap: 8px;
-  max-width: 80%;
+  max-width: 78%;
 }
 
 .chat-msg.own {
@@ -901,38 +1058,49 @@ button {
 .chat-bubble {
   background: var(--bg);
   padding: 8px 12px;
-  border-radius: 12px;
-  font-size: 14px;
+  border-radius: var(--radius-lg);
+  border-bottom-left-radius: 3px;
+  font-size: 13px;
   word-break: break-word;
   white-space: pre-wrap;
+  line-height: 1.5;
 }
 
 .chat-msg.own .chat-bubble {
   background: var(--primary);
   color: #fff;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: 3px;
 }
 
 .chat-msg-meta {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
+  margin-top: 2px;
+  text-align: right;
+}
+
+.chat-msg.own .chat-msg-meta {
+  text-align: left;
 }
 
 .chat-input {
   display: flex;
   gap: 8px;
-  padding: 12px;
+  padding: 10px 12px;
   border-top: 1px solid var(--border);
 }
 
 .chat-input input {
   flex: 1;
-  padding: 10px 12px;
+  padding: 7px 11px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
   outline: none;
   background: var(--bg);
   color: var(--text);
+  transition: border-color 0.15s;
 }
 
 .chat-input input:focus {
@@ -942,16 +1110,19 @@ button {
 .chat-user-list {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .chat-user-list .title {
-  padding: 10px 14px;
-  font-size: 13px;
+  padding: 9px 14px;
+  font-size: 12px;
   font-weight: 600;
   border-bottom: 1px solid var(--border);
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .chat-user-item {
@@ -960,7 +1131,8 @@ button {
   gap: 8px;
   padding: 8px 14px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  transition: background 0.15s;
 }
 
 .chat-user-item:hover {
@@ -969,72 +1141,83 @@ button {
 
 .chat-user-item.active {
   background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 500;
 }
 
 .online-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #22c55e;
+  background: var(--success);
   margin-left: auto;
   flex-shrink: 0;
 }
 
-/* Admin */
+/* ============================================
+   Admin
+   ============================================ */
 .admin-wrap {
   margin-top: 20px;
 }
 
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-card .num {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .stat-card .label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
+  margin-top: 4px;
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .admin-table th,
 .admin-table td {
   text-align: left;
   padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .admin-table th {
   color: var(--text-muted);
   font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .role-badge {
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   background: var(--primary-soft);
   color: var(--primary);
+  font-weight: 500;
 }
 
 .role-badge.admin {
@@ -1047,73 +1230,73 @@ button {
   font-weight: 600;
 }
 
-@media (max-width: 640px) {
-  .navbar-inner {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .nav-search {
-    order: 3;
-    flex-basis: 100%;
-  }
-  .chat-layout {
-    flex-direction: column;
-    height: auto;
-  }
-  .chat-sidebar {
-    width: 100%;
-    flex-direction: row;
-  }
-  .chat-panel {
-    min-height: 420px;
-  }
-}
-
-/* Install wizard */
+/* ============================================
+   Install Wizard
+   ============================================ */
 .install-wrap {
-  max-width: 560px;
-  margin: 48px auto;
+  max-width: 520px;
+  margin: 56px auto;
 }
 
 .install-card {
-  padding: 28px;
+  padding: 28px 32px;
 }
 
 .install-card h1 {
-  font-size: 24px;
+  font-size: 20px;
+  font-weight: 700;
   margin: 0 0 4px;
+  letter-spacing: -0.02em;
 }
 
 .install-card .subtitle {
   color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 20px;
+  font-size: 13px;
+  margin-bottom: 24px;
 }
 
 .install-steps {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.install-steps::before {
+  content: '';
+  position: absolute;
+  top: 11px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--border);
+  z-index: 0;
 }
 
 .install-step {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-muted);
+  position: relative;
+  z-index: 1;
+  flex: 1;
 }
 
 .install-step .step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s;
 }
 
 .install-step.active {
@@ -1134,17 +1317,18 @@ button {
 }
 
 .install-body {
-  min-height: 160px;
+  min-height: 120px;
 }
 
 .install-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-soft);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  line-height: 1.6;
 }
 
 .install-hint {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--danger);
   margin-top: 12px;
 }
@@ -1154,7 +1338,7 @@ button {
   margin: 0 0 16px;
   padding: 0;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   overflow: hidden;
 }
 
@@ -1162,9 +1346,9 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 13px;
 }
 
 .check-list li:last-child {
@@ -1172,15 +1356,16 @@ button {
 }
 
 .check-flag {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .check-flag.ok {
-  background: var(--success-soft, #d1fae5);
-  color: var(--success, #059669);
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 .check-flag.bad {
@@ -1194,32 +1379,85 @@ button {
 
 .check-detail {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   margin-left: auto;
   word-break: break-all;
 }
 
 .install-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 8px;
+  margin-top: 22px;
 }
 
 .install-actions .btn-primary {
-  min-width: 100px;
+  min-width: 90px;
 }
 
 .install-done {
   text-align: center;
-  padding: 24px 0;
+  padding: 20px 0;
 }
 
 .install-done h2 {
   margin: 0 0 8px;
-  color: var(--success, #059669);
+  color: var(--success);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .install-done p {
   color: var(--text-soft);
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 640px) {
+  .navbar-inner {
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .nav-search {
+    display: none;
+  }
+
+  .chat-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .chat-panel {
+    min-height: 400px;
+  }
+
+  .container {
+    padding: 0 14px;
+  }
+
+  .auth-wrap {
+    margin: 32px auto;
+  }
+
+  .auth-card {
+    padding: 22px 24px;
+  }
+
+  .install-card {
+    padding: 22px 24px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    gap: 12px;
+  }
 }

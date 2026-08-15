@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { useSite } from '../context/SiteContext';
 import Avatar from './Avatar';
 import api from '../api';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { theme, toggle } = useTheme();
   const { site } = useSite();
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
@@ -53,9 +51,6 @@ export default function Navbar() {
           <button type="submit" className="btn">搜索</button>
         </form>
         <div className="nav-actions">
-          <button className="btn btn-sm" onClick={toggle} title="切换主题">
-            {theme === 'dark' ? '浅色' : '深色'}
-          </button>
           <Link className="btn btn-sm" to="/chat">聊天</Link>
           {user ? (
             <>
