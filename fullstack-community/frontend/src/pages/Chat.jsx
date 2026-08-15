@@ -46,60 +46,80 @@ export default function Chat() {
     try {
       if (room === 'public') {
         const { data } = await api.get('/messages/history');
-        setMessages(data.messages);
+        setMessages(data?.messages || []);
       } else if (isGroup) {
         const { data } = await api.get('/messages/history', { params: { with: `group:${room}` } });
-        setMessages(data.messages || []);
+        setMessages(data?.messages || []);
       } else {
         const { data } = await api.get('/messages/history', { params: { with: room } });
-        setMessages(data.messages || []);
+        setMessages(data?.messages || []);
       }
     } catch (err) {
+      console.error('loadHistory error:', err);
       setError(errMsg(err));
+      setMessages([]);
     }
   };
 
   const loadConversations = () => {
     api.get('/messages/conversations').then((res) => {
-      setConversations(res.data.conversations || []);
-    }).catch(() => {});
+      setConversations(res.data?.conversations || []);
+    }).catch((err) => {
+      console.error('loadConversations error:', err);
+      setConversations([]);
+    });
   };
 
   const loadGroups = () => {
-    api.get('/groups').then((res) => setGroups(res.data.groups)).catch(() => {});
+    api.get('/groups').then((res) => {
+      setGroups(res.data?.groups || []);
+    }).catch((err) => {
+      console.error('loadGroups error:', err);
+      setGroups([]);
+    });
   };
 
   const loadFriends = () => {
-    api.get('/friends/me').then((res) => setFriends(res.data.friends)).catch(() => {});
+    api.get('/friends/me').then((res) => {
+      setFriends(res.data?.friends || []);
+    }).catch((err) => {
+      console.error('loadFriends error:', err);
+      setFriends([]);
+    });
   };
 
   const switchRoom = async (room, isGroup = false) => {
-    setActiveRoom(room);
-    setError('');
-    if (isGroup) {
-      setActiveUser(null);
-      setActiveGroup(room);
-      const group = groups.find(g => g.id === room);
-      if (group) setActiveGroup(group);
-      await loadHistory(room, true);
-      if (socket) {
-        socket.emit('join_group', room);
-      }
-    } else {
-      setActiveGroup(null);
-      if (room === 'public') {
+    try {
+      setActiveRoom(room);
+      setError('');
+      if (isGroup) {
         setActiveUser(null);
-      } else {
-        try {
-          const { data } = await api.get(`/users/${room}`);
-          setActiveUser(data.user);
-        } catch (e) {
-          setActiveUser({ id: room, username: `用户${room}` });
+        setActiveGroup(room);
+        const group = groups.find(g => g.id === room);
+        if (group) setActiveGroup(group);
+        await loadHistory(room, true);
+        if (socket) {
+          socket.emit('join_group', room);
         }
+      } else {
+        setActiveGroup(null);
+        if (room === 'public') {
+          setActiveUser(null);
+        } else {
+          try {
+            const { data } = await api.get(`/users/${room}`);
+            setActiveUser(data?.user || { id: room, username: `用户${room}` });
+          } catch (e) {
+            setActiveUser({ id: room, username: `用户${room}` });
+          }
+        }
+        await loadHistory(room);
       }
-      await loadHistory(room);
+      setInput('');
+    } catch (err) {
+      console.error('switchRoom error:', err);
+      setError('加载聊天失败，请刷新重试');
     }
-    setInput('');
   };
 
   useEffect(() => {
