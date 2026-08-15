@@ -67,4 +67,34 @@ router.get('/conversations', authRequired, (req, res) => {
   res.json({ conversations });
 });
 
+router.post('/', authRequired, (req, res) => {
+  const { recipientId, content } = req.body;
+  if (!recipientId || !content) return res.status(400).json({ error: '参数不完整' });
+
+  const recipient = db.prepare('SELECT id FROM users WHERE id = ? AND banned = 0').get(recipientId);
+  if (!recipient) return res.status(404).json({ error: '接收者不存在' });
+
+  const room = privateRoom(req.user.id, recipientId);
+  const result = db.prepare(
+    'INSERT INTO messages (sender_id, recipient_id, room, content) VALUES (?, ?, ?, ?)'
+  ).run(req.user.id, recipientId, room, content);
+
+  const message = db.prepare(
+    `SELECT m.*, u.username, u.avatar_color FROM messages m
+     JOIN users u ON u.id = m.sender_id WHERE m.id = ?`
+  ).get(result.lastInsertRowid);
+
+  const serialized = messageToJson(message);
+
+  const recipientSocketId = onlineUsers.get(recipientId);
+  if (recipientSocketId) {
+    const socket = io.sockets.sockets.get(recipientSocketId);
+    if (socket) {
+      socket.emit('message', serialized);
+    }
+  }
+
+  res.json({ ok: true, message: serialized });
+});
+
 module.exports = router;
