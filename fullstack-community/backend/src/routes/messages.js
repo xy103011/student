@@ -36,9 +36,7 @@ router.get('/history', authRequired, (req, res) => {
     return res.json({ room: 'public', messages: messages.map(messageToJson) });
   }
   
-  const targetId = parseInt(withId, 10);
-  
-  // 判断是私聊还是群聊
+  // 判断是群聊还是私聊
   if (typeof withId === 'string' && withId.startsWith('group:')) {
     const groupId = parseInt(withId.replace('group:', ''), 10);
     const messages = db.prepare(
@@ -48,6 +46,12 @@ router.get('/history', authRequired, (req, res) => {
        ORDER BY m.id DESC LIMIT 100`
     ).all(`group:${groupId}`).reverse();
     return res.json({ room: `group:${groupId}`, messages: messages.map(messageToJson) });
+  }
+  
+  // 私聊消息
+  const targetId = parseInt(withId, 10);
+  if (isNaN(targetId)) {
+    return res.status(400).json({ error: '无效的用户 ID' });
   }
   
   // 私聊消息
