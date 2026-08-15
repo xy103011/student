@@ -1,7 +1,7 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
-const { JWT_SECRET } = require('./config');
+const { getJwtSecret } = require('./config');
 
 function privateRoom(a, b) {
   return `private:${Math.min(a, b)}:${Math.max(a, b)}`;
@@ -41,7 +41,7 @@ function initSocket(server) {
     const token = socket.handshake.auth && socket.handshake.auth.token;
     if (!token) return next(new Error('unauthorized'));
     try {
-      const payload = jwt.verify(token, JWT_SECRET);
+      const payload = jwt.verify(token, getJwtSecret());
       socket.user = { id: payload.id, username: payload.username };
       next();
     } catch (e) {

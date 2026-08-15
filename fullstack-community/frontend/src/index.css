@@ -1068,3 +1068,158 @@ button {
     min-height: 420px;
   }
 }
+
+/* Install wizard */
+.install-wrap {
+  max-width: 560px;
+  margin: 48px auto;
+}
+
+.install-card {
+  padding: 28px;
+}
+
+.install-card h1 {
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+
+.install-card .subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.install-steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.install-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.install-step .step-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.install-step.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.install-step.active .step-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.install-step.done .step-dot {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.install-body {
+  min-height: 160px;
+}
+
+.install-desc {
+  font-size: 14px;
+  color: var(--text-soft);
+  margin-bottom: 16px;
+}
+
+.install-hint {
+  font-size: 13px;
+  color: var(--danger);
+  margin-top: 12px;
+}
+
+.check-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.check-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.check-list li:last-child {
+  border-bottom: none;
+}
+
+.check-flag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.check-flag.ok {
+  background: var(--success-soft, #d1fae5);
+  color: var(--success, #059669);
+}
+
+.check-flag.bad {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.check-name {
+  font-weight: 600;
+}
+
+.check-detail {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-left: auto;
+  word-break: break-all;
+}
+
+.install-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.install-actions .btn-primary {
+  min-width: 100px;
+}
+
+.install-done {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.install-done h2 {
+  margin: 0 0 8px;
+  color: var(--success, #059669);
+}
+
+.install-done p {
+  color: var(--text-soft);
+  font-size: 14px;
+}

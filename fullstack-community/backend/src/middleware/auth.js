@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const db = require('../db');
-const { JWT_SECRET } = require('../config');
+const { getJwtSecret } = require('../config');
 
 function parseToken(req) {
   const header = req.headers.authorization || '';
@@ -14,7 +14,7 @@ function authRequired(req, res, next) {
     return res.status(401).json({ error: '请先登录' });
   }
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, getJwtSecret());
     req.user = { id: payload.id, username: payload.username };
     next();
   } catch (e) {
@@ -26,7 +26,7 @@ function optionalAuth(req, res, next) {
   const token = parseToken(req);
   if (token) {
     try {
-      const payload = jwt.verify(token, JWT_SECRET);
+      const payload = jwt.verify(token, getJwtSecret());
       req.user = { id: payload.id, username: payload.username };
     } catch (e) {
       /* 忽略无效 token */

@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useSite } from '../context/SiteContext';
 import Avatar from './Avatar';
 import api from '../api';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { theme, toggle } = useTheme();
+  const { site } = useSite();
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
   const [unread, setUnread] = useState(0);
@@ -41,7 +43,7 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="brand">全栈 AI 社区</Link>
+        <Link to="/" className="brand">{site.name}</Link>
         <form className="nav-search" onSubmit={onSearch}>
           <input
             value={keyword}

@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
-const { JWT_SECRET, JWT_EXPIRES } = require('../config');
+const { getJwtSecret, JWT_EXPIRES } = require('../config');
 const { authRequired } = require('../middleware/auth');
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 const AVATAR_COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#14b8a6'];
 
 function signToken(user) {
-  return jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+  return jwt.sign({ id: user.id, username: user.username }, getJwtSecret(), { expiresIn: JWT_EXPIRES });
 }
 
 function publicUser(user) {

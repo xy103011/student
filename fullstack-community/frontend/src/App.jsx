@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -9,13 +10,38 @@ import Profile from './pages/Profile';
 import Notifications from './pages/Notifications';
 import Chat from './pages/Chat';
 import Admin from './pages/Admin';
+import Install from './pages/install/Install';
 import { useAuth } from './context/AuthContext';
+import { useSite } from './context/SiteContext';
 
 export default function App() {
   const { loading } = useAuth();
-  if (loading) {
+  const { installed, site } = useSite();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (installed === false && location.pathname !== '/install') {
+      navigate('/install', { replace: true });
+    }
+  }, [installed, location.pathname, navigate]);
+
+  if (loading || installed === null) {
     return <div className="loading-screen">加载中…</div>;
   }
+
+  if (location.pathname === '/install') {
+    return (
+      <div className="app">
+        <main className="container">
+          <Routes>
+            <Route path="/install" element={<Install />} />
+          </Routes>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <Navbar />
@@ -32,7 +58,7 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
-      <footer className="footer">全栈 AI 社区 · 分享 · 交流 · 成长</footer>
+      <footer className="footer">{site.name} · 分享 · 交流 · 成长</footer>
     </div>
   );
 }
