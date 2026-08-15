@@ -53,14 +53,22 @@ router.get('/history', authRequired, (req, res) => {
   if (String(withId).startsWith('private:')) {
     // 私聊消息：直接使用 room 查询
     const room = String(withId);
-    console.log('[Messages] Private room:', room);
+    console.log('[Messages] Private room query:', room);
+    // 如果格式是 private:X，需要补全为 private:currentUser:X
+    let queryRoom = room;
+    if (room.match(/^private:\d+$/)) {
+      // 格式是 private:userId，需要补全
+      const userId = room.replace('private:', '');
+      queryRoom = privateRoom(req.user.id, parseInt(userId, 10));
+      console.log('[Messages] Expanded to:', queryRoom);
+    }
     const messages = db.prepare(
       `SELECT m.*, u.username, u.avatar_color FROM messages m
        JOIN users u ON u.id = m.sender_id
        WHERE m.room = ?
        ORDER BY m.id DESC LIMIT 200`
-    ).all(room).reverse();
-    return res.json({ room, messages: messages.map(messageToJson) });
+    ).all(queryRoom).reverse();
+    return res.json({ room: queryRoom, messages: messages.map(messageToJson) });
   }
   
   // 兼容旧的数字格式，转换为 private:格式
