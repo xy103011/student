@@ -50,7 +50,9 @@ export default function Chat() {
         params.with = room;
       }
       
+      console.log('loadHistory:', url, params);
       const { data } = await api.get(url, { params });
+      console.log('History loaded:', data?.messages?.length || 0, 'messages');
       setMessages(data?.messages || []);
     } catch (err) {
       console.error('loadHistory error:', err);
@@ -91,15 +93,25 @@ export default function Chat() {
       setActiveRoom(room);
       setError('');
       activeRoomRef.current = room;
+      setInput('');
+      
+      console.log('switchRoom called:', room, 'isGroup:', isGroup);
       
       if (isGroup) {
         setActiveUser(null);
-        setActiveGroup(room);
+        // 从 groups 列表中查找群聊信息
         const group = groups.find(g => g.id === room);
-        if (group) setActiveGroup(group);
+        console.log('Found group:', group);
+        setActiveGroup(group || { id: room, name: `群聊${room}` });
+        
         await loadHistory(room, true);
-        if (socket) {
-          socket.emit('join_group', room);
+        
+        if (socket && socket.connected) {
+          socket.emit('join_group', room, (res) => {
+            console.log('join_group response:', res);
+          });
+        } else {
+          console.warn('Socket not connected');
         }
       } else {
         setActiveGroup(null);
@@ -109,15 +121,16 @@ export default function Chat() {
         } else {
           try {
             const { data } = await api.get(`/users/${room}`);
+            console.log('User data:', data);
             setActiveUser(data?.user || { id: room, username: `用户${room}` });
             await loadHistory(room);
           } catch (e) {
+            console.error('Failed to load user:', e);
             setActiveUser({ id: room, username: `用户${room}` });
             await loadHistory(room);
           }
         }
       }
-      setInput('');
     } catch (err) {
       console.error('switchRoom error:', err);
       setError('加载聊天失败，请刷新重试');
